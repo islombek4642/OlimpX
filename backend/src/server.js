@@ -54,6 +54,9 @@ console.log('✅ JWT_SECRET tekshiruvi o\'tdi');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust Proxy (Real IP detection via Nginx)
+app.set('trust proxy', 1);
+
 // ============================================
 // SECURITY MIDDLEWARE
 // ============================================

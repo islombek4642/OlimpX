@@ -12,6 +12,8 @@ import prisma from '../config/database.js';
  */
 export const auditLog = async ({ userId, action, resourceType, resourceId, details, ip }) => {
   try {
+    const cleanIp = ip && ip.includes('::ffff:') ? ip.split('::ffff:')[1] : ip;
+
     await prisma.auditLog.create({
       data: {
         userId,
@@ -19,7 +21,7 @@ export const auditLog = async ({ userId, action, resourceType, resourceId, detai
         resourceType,
         resourceId,
         details,
-        ipAddress: ip
+        ipAddress: cleanIp
       }
     });
   } catch (error) {
