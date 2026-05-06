@@ -42,8 +42,9 @@ nginx/ssl/
 *.key
 *.csr
 
-# Docker volumes
-docker-compose.ssl.yml
+# Docker local volumes (server-specific)
+certbot-data/
+certbot-www/
 
 # OS files
 Thumbs.db
