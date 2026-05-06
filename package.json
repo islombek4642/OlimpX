@@ -27,7 +27,9 @@
     "ssl:check": "node scripts/ssl-check.js",
     "ssl:renew": "node scripts/ssl-renew.js",
     "ssl:logs": "sudo tail -f /var/log/olimpx-ssl-renewal.log",
-    "docker:ssl": "docker-compose -f docker-compose.ssl.yml up -d"
+    "docker:ssl": "docker-compose -f docker-compose.ssl.yml up -d",
+    "deploy": "bash scripts/deploy.sh",
+    "deploy:full": "sudo bash scripts/deploy.sh"
   },
   "keywords": [],
   "author": "OlimpX Team",
