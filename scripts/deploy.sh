@@ -13,6 +13,18 @@ echo -e "${BLUE}==========================================${NC}"
 echo -e "${BLUE}🐳 OlimpX Docker Deployment boshlandi...${NC}"
 echo -e "${BLUE}==========================================${NC}"
 
+# Docker Compose buyrug'ini aniqlash
+DOCKER_COMPOSE_CMD="docker-compose"
+if ! command -v docker-compose &> /dev/null; then
+    if docker compose version &> /dev/null; then
+        DOCKER_COMPOSE_CMD="docker compose"
+    else
+        echo -e "${RED}❌ Docker Compose topilmadi (docker-compose ham, docker compose ham)!${NC}"
+        echo -e "${YELLOW}Iltimos, Docker Compose'ni o'rnating.${NC}"
+        exit 1
+    fi
+fi
+
 # 1. Kodni yangilash (Git pull)
 # Script o'zini o'zi yangilasa, qayta ishga tushishi kerak
 if [[ "$INTERNAL_RESTART" != "true" ]]; then
@@ -32,7 +44,7 @@ fi
 if [[ "$1" == "--clean" ]]; then
     echo -e "${YELLOW}🧹 Tozalash (Cleanup) boshlandi...${NC}"
     rm -rf node_modules backend/node_modules
-    docker-compose down -v --remove-orphans &> /dev/null
+    $DOCKER_COMPOSE_CMD down -v --remove-orphans &> /dev/null
     echo -e "${GREEN}✅ Tozalash yakunlandi.${NC}"
 fi
 
@@ -70,8 +82,8 @@ else
 fi
 
 echo "🏗️  Konteynerlar qurilmoqda..."
-docker-compose -f $DOCKER_FILE down
-docker-compose -f $DOCKER_FILE up -d --build
+$DOCKER_COMPOSE_CMD -f $DOCKER_FILE down
+$DOCKER_COMPOSE_CMD -f $DOCKER_FILE up -d --build
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Docker Compose ishga tushirishda xatolik!${NC}"
