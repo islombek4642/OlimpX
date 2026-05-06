@@ -15,44 +15,55 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Seeding database...');
 
-  // 1. Create Admin User
-  const adminEmail = process.env.ADMIN_EMAIL || 'admin@olimpx.uz';
-  const adminPassword = process.env.ADMIN_PASSWORD || 'Admin123!';
-  
-  const salt = await bcrypt.genSalt(10);
-  const adminPasswordHash = await bcrypt.hash(adminPassword, salt);
+  // 1. Create Admin User (requires env vars, no hardcoded defaults)
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const adminPassword = process.env.ADMIN_PASSWORD;
 
-  await prisma.user.upsert({
-    where: { email: adminEmail },
-    update: {
-      passwordHash: adminPasswordHash // Update password if it changed in .env
-    },
-    create: {
-      fullName: 'Admin User',
-      email: adminEmail,
-      passwordHash: adminPasswordHash,
-      role: 'admin',
-      isVerified: true
-    }
-  });
-  console.log(`✅ Admin user ready (${adminEmail})`);
+  if (!adminEmail || !adminPassword) {
+    console.log('⚠️ ADMIN_EMAIL or ADMIN_PASSWORD not set. Skipping admin creation.');
+  } else {
+    const salt = await bcrypt.genSalt(10);
+    const adminPasswordHash = await bcrypt.hash(adminPassword, salt);
 
-  // 2. Create Test User
-  const testEmail = 'test@olimpx.uz';
-  const testPasswordHash = await bcrypt.hash('Test123!', salt);
+    await prisma.user.upsert({
+      where: { email: adminEmail },
+      update: {
+        passwordHash: adminPasswordHash
+      },
+      create: {
+        fullName: 'Admin User',
+        email: adminEmail,
+        passwordHash: adminPasswordHash,
+        role: 'admin',
+        isVerified: true
+      }
+    });
+    console.log(`✅ Admin user ready (${adminEmail})`);
+  }
 
-  await prisma.user.upsert({
-    where: { email: testEmail },
-    update: {},
-    create: {
-      fullName: 'Test User',
-      email: testEmail,
-      passwordHash: testPasswordHash,
-      role: 'user',
-      isVerified: true
-    }
-  });
-  console.log('✅ Test user ready');
+  // 2. Create Test User (requires env vars, no hardcoded defaults)
+  const testEmail = process.env.TEST_EMAIL;
+  const testPassword = process.env.TEST_PASSWORD;
+
+  if (!testEmail || !testPassword) {
+    console.log('⚠️ TEST_EMAIL or TEST_PASSWORD not set. Skipping test user creation.');
+  } else {
+    const salt = await bcrypt.genSalt(10);
+    const testPasswordHash = await bcrypt.hash(testPassword, salt);
+
+    await prisma.user.upsert({
+      where: { email: testEmail },
+      update: {},
+      create: {
+        fullName: 'Test User',
+        email: testEmail,
+        passwordHash: testPasswordHash,
+        role: 'user',
+        isVerified: true
+      }
+    });
+    console.log('✅ Test user ready');
+  }
 
   // 3. Create Sample Olympiads (check if exists to avoid duplicates)
   const olympiadCount = await prisma.olympiad.count();
