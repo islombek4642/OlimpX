@@ -95,8 +95,11 @@ echo -e "\n${BLUE}Step 4: Database sozlash (Migratsiya va Seed)...${NC}"
 echo "⏳ PostgreSQL tayyor bo'lishini kutilmoqda..."
 
 # pg_isready orqali postgres tayyor bo'lguncha kutamiz (max 60 soniya)
+PG_USER=$(grep "^POSTGRES_USER[[:space:]]*=" .env | cut -d'=' -f2- | tr -d '"' | tr -d "'" | tr -d '[:space:]')
+PG_USER="${PG_USER:-postgres}"
+
 RETRIES=30
-until docker exec olimpx-db pg_isready -U postgres -q; do
+until docker exec olimpx-db pg_isready -U "$PG_USER" -q; do
     RETRIES=$((RETRIES - 1))
     if [ $RETRIES -eq 0 ]; then
         echo -e "${RED}❌ PostgreSQL 60 soniya ichida tayyor bo'lmadi!${NC}"
