@@ -38,6 +38,7 @@ RUN npm install --omit=dev && \
 COPY --from=builder /app/backend/node_modules/.prisma ./backend/node_modules/.prisma
 COPY --from=builder /app/backend/prisma ./backend/prisma
 COPY --from=builder /app/backend/src ./backend/src
+COPY --from=builder /app/*.html ./
 COPY --from=builder /app/scripts ./scripts
 COPY --from=builder /app/pages ./pages
 COPY --from=builder /app/admin ./admin
