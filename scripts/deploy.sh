@@ -209,10 +209,10 @@ fi
 echo -e "\n${GREEN}==========================================${NC}"
 echo -e "${GREEN}✅ Docker Deployment muvaffaqiyatli yakunlandi!${NC}"
 if [ "$SSL_MODE" = "true" ]; then
-    echo -e "${GREEN}🌐 Sayt: https://${DOMAIN}${NC}"
+    echo -e "${GREEN}🌐 Sayt: https://${DOMAIN}:8444${NC}"
+    echo -e "${YELLOW}ℹ️  Eslatma: Port 80 band bo'lgani uchun OlimpX 8081/8444 portlarda ishga tushirildi.${NC}"
 else
     echo -e "${GREEN}🌐 Sayt: http://$(hostname -I | awk '{print $1}'):3000${NC}"
-    echo -e "${YELLOW}💡 SSL uchun .env ga DOMAIN va SSL_EMAIL qo'shing${NC}"
 fi
 echo -e "${GREEN}==========================================${NC}"
 
