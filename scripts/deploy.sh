@@ -208,11 +208,19 @@ fi
 
 echo -e "\n${GREEN}==========================================${NC}"
 echo -e "${GREEN}✅ Docker Deployment muvaffaqiyatli yakunlandi!${NC}"
+SERVER_IP=$(curl -s https://api.ipify.org || hostname -I | awk '{print $1}')
+
 if [ "$SSL_MODE" = "true" ]; then
-    echo -e "${GREEN}🌐 Sayt: https://${DOMAIN}:8444${NC}"
+    # Domen ishlayotganini tekshirish
+    if host "$DOMAIN" > /dev/null 2>&1; then
+        echo -e "${GREEN}🌐 Sayt: https://${DOMAIN}:8444${NC}"
+    else
+        echo -e "${YELLOW}⚠️ Domen hali ulanmagan ($DOMAIN)${NC}"
+        echo -e "${GREEN}🌐 Sayt (IP orqali): http://${SERVER_IP}:8081${NC}"
+    fi
     echo -e "${YELLOW}ℹ️  Eslatma: Port 80 band bo'lgani uchun OlimpX 8081/8444 portlarda ishga tushirildi.${NC}"
 else
-    echo -e "${GREEN}🌐 Sayt: http://$(hostname -I | awk '{print $1}'):3000${NC}"
+    echo -e "${GREEN}🌐 Sayt: http://${SERVER_IP}:3000${NC}"
 fi
 echo -e "${GREEN}==========================================${NC}"
 
