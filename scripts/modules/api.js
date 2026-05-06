@@ -166,5 +166,17 @@ export const api = {
   // Reports
   reports: {
     getStats: () => request('/reports/stats')
+  },
+
+  // Quiz Attempts (Resume Feature)
+  attempts: {
+    get: (olympiadId) => request(`/attempts/${olympiadId}`),
+    save: (data) => request('/attempts/save', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    }),
+    clear: (olympiadId) => request(`/attempts/${olympiadId}`, {
+      method: 'DELETE'
+    })
   }
 };

@@ -13,6 +13,7 @@ import resultRoutes from './routes/result.routes.js';
 import reportRoutes from './routes/report.routes.js';
 import backupRoutes from './routes/backup.routes.js';
 import certificateRoutes from './routes/certificate.routes.js';
+import attemptRoutes from './routes/attempt.routes.js';
 import helmet from 'helmet';
 import { setupSwagger } from './config/swagger.js';
 import { initRedis } from './config/redis.js';
@@ -127,6 +128,7 @@ app.use('/api/results', resultRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/backups', backupRoutes);
 app.use('/api/certificates', certificateRoutes);
+app.use('/api/attempts', attemptRoutes);
 
 // Swagger API Documentation
 setupSwagger(app);

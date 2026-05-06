@@ -99,3 +99,18 @@ model RefreshToken {
   @@index([token])
   @@index([userId])
 }
+
+model QuizAttempt {
+  id             String    @id @default(uuid())
+  userId         String
+  olympiadId     String
+  currentIdx     Int       @default(0)
+  answers        Json      // Array of selected options
+  timeLeft       Int       // remaining seconds for current question
+  totalTimeSpent Int       @default(0)
+  skippedIdxs    Json      // Array of IDs of skipped questions
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@unique([userId, olympiadId])
+}

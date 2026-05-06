@@ -68,6 +68,62 @@ document.addEventListener('DOMContentLoaded', async () => {
     let timerInterval = null;
     let isWaitingForNext = false;
 
+    // Check for active attempt
+    try {
+      const attemptRes = await api.attempts.get(olympiadId);
+      if (attemptRes.success && attemptRes.data) {
+        const attempt = attemptRes.data;
+        const resume = await showConfirmModal({
+          title: 'Davom ettirish?',
+          message: `Sizda tugallanmagan urinish bor (${attempt.currentIdx + 1}-savolda). Uni davom ettirmoqchimisiz?`,
+          confirmText: 'Ha, davom ettirish',
+          cancelText: 'Yo\'q, boshidan boshlash',
+          type: 'info'
+        });
+
+        if (resume) {
+          currentIdx = attempt.currentIdx;
+          answers = attempt.answers;
+          timeLeft = attempt.timeLeft;
+          totalTimeSpentSecs = attempt.totalTimeSpent;
+          
+          // Restore skipped questions pool if any
+          const savedSkippedIds = attempt.skippedIdxs || [];
+          savedSkippedIds.forEach(id => {
+            if (!skippedIdxs.includes(id)) {
+              const q = questions.find(item => item.id === id);
+              if (q) {
+                skippedIdxs.push(id);
+                questionsPool.push(q);
+              }
+            }
+          });
+          
+          toast.success('Test tiklandi');
+        } else {
+          // Clear the old attempt if user chooses to start fresh
+          await api.attempts.clear(olympiadId);
+        }
+      }
+    } catch (err) {
+      console.warn('Attempt check failed:', err);
+    }
+
+    async function saveProgress() {
+      try {
+        await api.attempts.save({
+          olympiadId,
+          currentIdx,
+          answers,
+          timeLeft,
+          totalTimeSpent: totalTimeSpentSecs,
+          skippedIdxs
+        });
+      } catch (err) {
+        console.warn('Progress save failed:', err);
+      }
+    }
+
     // Elements
     const olympiadTitleEl = document.getElementById('olympiadTitle');
     const counterEl = document.getElementById('questionCounter');
@@ -108,6 +164,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (timeLeft <= 0) {
           handleTimeout();
+        }
+
+        // Auto-save every 10 seconds
+        if (totalTimeSpentSecs % 10 === 0) {
+          saveProgress();
         }
       }, 1000);
     }
@@ -219,6 +280,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // Auto-advance after delay
       setTimeout(() => {
+        saveProgress(); // Save before moving
         moveToNext();
       }, 1500);
     }
@@ -234,6 +296,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         toast.info('Savol oxiriga olib qo\'yildi');
       }
       
+      saveProgress();
       moveToNext();
     }
 
@@ -269,6 +332,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             title: olympiad.title,
             date: new Date().toISOString()
           }));
+          // Clear active attempt on success
+          await api.attempts.clear(olympiadId);
           navigateTo('results.html?id=' + result.id);
         }
       } catch (error) {

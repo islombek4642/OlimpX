@@ -197,7 +197,7 @@ export const importOlympiad = async (req, res, next) => {
     // To'g'ri javob: "+ Javob" yoki "* Javob"
     // Noto'g'ri javob: "= Javob" yoki "- Javob"
     
-    const qPattern = /^\d+[\.\)\s]+|.*\?$/; 
+    const qPattern = /^[?\d]+[\.\)\s]+|.*\?$/; 
     const correctPattern = /^[\+\*]/;
     const wrongPattern = /^[=\-]/;
 
