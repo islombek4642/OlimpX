@@ -140,9 +140,14 @@ app.use(errorHandler);
 // SERVER START + GRACEFUL SHUTDOWN
 // ============================================
 const server = app.listen(PORT, () => {
-  console.log(`🚀 Server is running on http://localhost:${PORT}`);
-  console.log(`📚 API Documentation: http://localhost:${PORT}/api-docs`);
-  console.log(`🔌 WebSocket: ws://localhost:${PORT}/ws`);
+  const host = process.env.DOMAIN || 'localhost';
+  const protocol = process.env.DOMAIN ? 'https' : 'http';
+  const wsProtocol = process.env.DOMAIN ? 'wss' : 'ws';
+  const portSuffix = process.env.DOMAIN ? '' : `:${PORT}`;
+
+  console.log(`🚀 Server is running on ${protocol}://${host}${portSuffix}`);
+  console.log(`📚 API Documentation: ${protocol}://${host}${portSuffix}/api-docs`);
+  console.log(`🔌 WebSocket: ${wsProtocol}://${host}${portSuffix}/ws`);
 });
 
 // Initialize WebSocket
