@@ -31,8 +31,8 @@ COPY package*.json ./
 COPY backend/package*.json ./backend/
 
 # Install production dependencies only
-RUN npm ci --only=production && \
-    cd backend && npm ci --only=production
+RUN npm install --omit=dev && \
+    cd backend && npm install --omit=dev
 
 # Copy built application from builder
 COPY --from=builder /app/backend/node_modules/.prisma ./backend/node_modules/.prisma
