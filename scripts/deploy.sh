@@ -92,8 +92,21 @@ fi
 
 # 4. Database Setup (Konteyner ichida)
 echo -e "\n${BLUE}Step 4: Database sozlash (Migratsiya va Seed)...${NC}"
-echo "⏳ Database va App tayyor bo'lishini kutilmoqda (30 soniya)..."
-sleep 30
+echo "⏳ PostgreSQL tayyor bo'lishini kutilmoqda..."
+
+# pg_isready orqali postgres tayyor bo'lguncha kutamiz (max 60 soniya)
+RETRIES=30
+until docker exec olimpx-db pg_isready -U postgres -q; do
+    RETRIES=$((RETRIES - 1))
+    if [ $RETRIES -eq 0 ]; then
+        echo -e "${RED}❌ PostgreSQL 60 soniya ichida tayyor bo'lmadi!${NC}"
+        exit 1
+    fi
+    echo "⏳ PostgreSQL hali tayyor emas, 2 soniya kutilmoqda... ($RETRIES urinish qoldi)"
+    sleep 2
+done
+echo -e "${GREEN}✅ PostgreSQL tayyor.${NC}"
+sleep 2  # App konteyneriga ham biroz vaqt beramiz
 
 echo "🔄 Prisma migratsiya va seed ishga tushmoqda..."
 docker exec olimpx-app npm run db:setup
