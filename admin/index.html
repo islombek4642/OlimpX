@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - OlimpX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="styles/admin.css">
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+
+  <script>
+    // Immediate theme initialization to prevent flicker
+    (function() {
+      try {
+        var t = localStorage.getItem('olimpx_theme');
+        if (t) {
+          var theme = t.replace(/"/g, '');
+          document.documentElement.setAttribute('data-theme', theme);
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="admin-body">
+  <!-- Sidebar will be injected here -->
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+    <!-- Header will be injected here -->
+    <header class="admin-header" id="adminHeader"></header>
+
+    <div class="admin-content">
+      <div class="admin-container">
+        <div class="admin-welcome animate-fadeIn">
+          <h1 class="admin-title">Boshqaruv Paneli</h1>
+          <p class="admin-subtitle">OlimpX tizimining umumiy holati va statistikasi</p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card animate-fadeIn" style="--delay: 0.1s;">
+            <div class="stat-card__icon icon-bg-primary">👥</div>
+            <div class="stat-card__info">
+              <span class="stat-card__label">Foydalanuvchilar</span>
+              <h2 class="stat-card__value" id="totalUsers">0</h2>
+              <span class="stat-card__trend text-success-600">↑ 12% o'sish</span>
+            </div>
+          </div>
+
+          <div class="stat-card animate-fadeIn" style="--delay: 0.2s;">
+            <div class="stat-card__icon icon-bg-success">🏆</div>
+            <div class="stat-card__info">
+              <span class="stat-card__label">Olimpiadalar</span>
+              <h2 class="stat-card__value" id="totalOlympiads">0</h2>
+              <span class="stat-card__trend text-success-600">↑ 4 ta yangi</span>
+            </div>
+          </div>
+
+          <div class="stat-card animate-fadeIn" style="--delay: 0.3s;">
+            <div class="stat-card__icon icon-bg-warning">📝</div>
+            <div class="stat-card__info">
+              <span class="stat-card__label">Jami urinishlar</span>
+              <h2 class="stat-card__value" id="totalAttempts">0</h2>
+              <span class="stat-card__trend text-warning-600">↑ 24 ta bugun</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="admin-grid mt-10">
+          <!-- Recent Users -->
+          <div class="admin-card animate-fadeIn" style="--delay: 0.4s;">
+            <div class="admin-card__header">
+              <h3 class="admin-card__title">Yangi foydalanuvchilar</h3>
+              <a href="/admin/pages/users.html" class="btn btn--text">Barchasi</a>
+            </div>
+            <div class="admin-list" id="recentUsersList">
+              <!-- JS Populated -->
+              <div class="skeleton-loader p-1-5">Yuklanmoqda...</div>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="admin-card animate-fadeIn" style="--delay: 0.5s;">
+            <div class="admin-card__header">
+              <h3 class="admin-card__title">Tezkor amallar</h3>
+            </div>
+            <div class="quick-actions">
+              <button class="btn btn--primary btn--full" onclick="location.href='/admin/pages/olympiads.html?action=new'">
+                <span>➕ Yangi Olimpiada</span>
+              </button>
+              <button class="btn btn--secondary btn--full" onclick="location.href='/admin/pages/questions.html'">
+                <span>❓ Savollar bazasi</span>
+              </button>
+              <button class="btn btn--outline btn--full" onclick="location.href='reports.html'">
+                <span>📊 Hisobotlar</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="scripts/admin-dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="uz">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kirish - OlimpX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/main.css">
+</head>
+
+<body>
+  <div class="auth-page">
+    <div class="auth-header-actions">
+      <!-- Theme toggle will be injected here -->
+    </div>
+    <div class="auth-page__content">
+      <div class="auth-card">
+        <!-- Header -->
+        <div class="auth-card__header">
+          <div class="auth-card__logo">OX</div>
+          <h1 class="auth-card__title">Xush kelibsiz!</h1>
+          <p class="auth-card__subtitle">OlimpX platformasiga kirish uchun ma'lumotlaringizni kiriting</p>
+        </div>
+
+        <!-- Form -->
+        <div class="auth-card__body">
+          <form id="loginForm" novalidate>
+            <!-- Email Field -->
+            <div class="form-group">
+              <input type="email" id="email" name="email" class="form-input" placeholder="Email manzilni kiriting"
+                autocomplete="email" required>
+              <label for="email" class="form-label">Email manzil</label>
+            </div>
+
+            <!-- Password Field -->
+            <div class="form-group">
+              <input type="password" id="password" name="password" class="form-input form-input--password"
+                placeholder="Parolni kiriting" autocomplete="current-password" required>
+              <label for="password" class="form-label">Parol</label>
+              <button type="button" class="password-toggle" id="togglePassword" aria-label="Parolni ko'rsatish">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Remember Me & Forgot Password -->
+            <div class="flex justify-between items-center mb-6">
+              <label class="flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="rememberMe" class="rounded border-gray-300">
+                <span class="text-sm text-secondary">Eslab qolish</span>
+              </label>
+              <a href="forgot-password.html" class="text-sm font-medium text-brand hover:text-primary-700">
+                Parolni unutdingizmi?
+              </a>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submitBtn" class="btn btn--primary btn--full btn--lg">
+              <span class="btn__text">Kirish</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="auth-card__footer">
+          <p class="auth-card__link">
+            Akkauntingiz yo'qmi? <a href="register.html">Ro'yxatdan o'tish</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="../scripts/login.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hisobotlar - OlimpX Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="styles/admin.css">
+  
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('olimpx_theme');
+        if (t) {
+          var theme = t.replace(/"/g, '');
+          document.documentElement.setAttribute('data-theme', theme);
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+    <header class="admin-header" id="adminHeader"></header>
+
+    <div class="admin-content">
+      <div class="admin-container">
+        <div class="admin-welcome animate-fadeIn">
+          <h1 class="admin-title">Tizim Hisobotlari</h1>
+          <p class="admin-subtitle">Audit loglari va tizim faoliyati monitoringi</p>
+        </div>
+
+        <!-- Test Results Table -->
+        <div class="admin-card animate-fadeIn">
+          <div class="admin-card__header">
+            <h3 class="admin-card__title">Test Natijalari (Barchasi)</h3>
+            <button class="btn btn--primary btn--sm" id="refreshResults">Yangilash</button>
+          </div>
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Vaqt</th>
+                  <th>Foydalanuvchi</th>
+                  <th>Olimpiada</th>
+                  <th>Natija</th>
+                  <th>Statistika</th>
+                  <th>Vaqt sarfi</th>
+                </tr>
+              </thead>
+              <tbody id="resultsTableBody">
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-tertiary);">Yuklanmoqda...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Audit Logs Table -->
+        <div class="admin-card mt-10 animate-fadeIn">
+          <div class="admin-card__header">
+            <h3 class="admin-card__title">Audit Loglari (Oxirgi 50 ta)</h3>
+            <button class="btn btn--outline btn--sm" id="refreshLogs">Yangilash</button>
+          </div>
+          <div class="admin-table-container">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Vaqt</th>
+                  <th>Foydalanuvchi</th>
+                  <th>Amal</th>
+                  <th>Resurs</th>
+                  <th>ID</th>
+                  <th>IP Manzil</th>
+                </tr>
+              </thead>
+              <tbody id="logsTableBody">
+                <tr>
+                  <td colspan="6" style="text-align: center; padding: 40px; color: var(--text-tertiary);">Yuklanmoqda...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script type="module" src="scripts/admin-reports.js"></script>
+</body>
+</html>

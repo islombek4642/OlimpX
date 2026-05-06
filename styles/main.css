@@ -1,0 +1,136 @@
+/* ============================================
+   OlimpX - Main Stylesheet (Consolidated)
+   ============================================ */
+
+@import url('variables.css');
+@import url('reset.css');
+@import url('utilities.css');
+@import url('components.css');
+@import url('pages.css');
+
+/* ============================================
+   ROBUST PAGE TRANSITIONS
+   ============================================ */
+
+/* Ensure body is visible by default */
+body {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition: opacity 0.3s ease;
+}
+
+/* Page exit (fade out) */
+body.page-is-exiting {
+  opacity: 0 !important;
+  transition: opacity 0.15s ease-in;
+  pointer-events: none;
+}
+
+/* Page enter (fade in) - only applied via JS */
+.page-fade-in {
+  animation: fadeInEffect 0.4s ease-out forwards;
+}
+
+@keyframes fadeInEffect {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ============================================
+   PAGE LAYOUTS (Consolidated)
+   ============================================ */
+
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-header-actions {
+  position: fixed;
+  top: 40px;
+  right: 40px;
+  z-index: 9999;
+  display: flex;
+  gap: var(--space-4);
+}
+
+.auth-header-actions .theme-toggle {
+  width: 52px;
+  height: 52px;
+  background: var(--bg-elevated);
+  border: 2px solid var(--border-light);
+  border-radius: 16px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.auth-header-actions .theme-toggle:hover {
+  transform: translateY(-3px) scale(1.05);
+  background: var(--bg-secondary);
+  border-color: var(--color-primary-500);
+  color: var(--color-primary-600);
+}
+
+.auth-header-actions .theme-toggle svg {
+  width: 26px;
+  height: 26px;
+}
+
+[data-theme="dark"] .auth-header-actions .theme-toggle {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="dark"] .auth-page {
+  background: #111827; /* Fallback for variable failure */
+}
+
+.auth-page__content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  max-width: 420px;
+}
+
+.dashboard {
+  min-height: 100vh;
+  background-color: var(--bg-secondary);
+  padding-top: 64px;
+}
+
+.dashboard__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-4);
+}
+
+/* ============================================
+   RESPONSIVE OVERRIDES
+   ============================================ */
+
+@media (max-width: 480px) {
+  .auth-page {
+    align-items: flex-start;
+    padding-top: 140px;
+    padding-bottom: 60px;
+    overflow-y: auto;
+  }
+  
+  .auth-header-actions {
+    top: 20px;
+    right: 20px;
+  }
+}
+

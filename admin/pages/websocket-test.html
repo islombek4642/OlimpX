@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Test - OlimpX Admin</title>
+  <link rel="stylesheet" href="../../styles/main.css">
+  <style>
+    .ws-container {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 1.5rem;
+    }
+    .ws-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    .ws-status.connected {
+      background: #dcfce7;
+      color: #166534;
+    }
+    .ws-status.disconnected {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+    .ws-status.connecting {
+      background: #fef3c7;
+      color: #92400e;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .status-dot.connected {
+      background: #22c55e;
+      animation: pulse 2s infinite;
+    }
+    .status-dot.disconnected {
+      background: #ef4444;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+    .message-log {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      height: 400px;
+      overflow-y: auto;
+      font-family: monospace;
+      font-size: 0.875rem;
+    }
+    .message-item {
+      padding: 0.25rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .message-item:last-child {
+      border-bottom: none;
+    }
+    .message-time {
+      color: var(--text-muted);
+    }
+    .message-in {
+      color: #22c55e;
+    }
+    .message-out {
+      color: #3b82f6;
+    }
+    .message-error {
+      color: #ef4444;
+    }
+    .controls {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      margin: 1rem 0;
+    }
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin: 1rem 0;
+    }
+    .stat-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+    }
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="ws-container">
+    <h1>🔌 WebSocket Test</h1>
+    
+    <div class="card" style="margin-bottom: 1.5rem;">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+        <div>
+          <span id="wsStatus" class="ws-status disconnected">
+            <span class="status-dot disconnected"></span>
+            Disconnected
+          </span>
+        </div>
+        <div class="controls">
+          <button class="btn btn-primary" onclick="connect()">Connect</button>
+          <button class="btn btn-secondary" onclick="disconnect()">Disconnect</button>
+          <button class="btn btn-secondary" onclick="authenticate()">Authenticate</button>
+          <button class="btn btn-secondary" onclick="subscribeAdmin()">Subscribe Admin</button>
+          <button class="btn btn-secondary" onclick="getStats()">Get Stats</button>
+          <button class="btn btn-danger" onclick="clearLog()">Clear Log</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-cards" id="statsContainer" style="display: none;">
+      <div class="stat-card">
+        <div class="text-muted text-sm">Total Users</div>
+        <div class="stat-value" id="totalUsers">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="text-muted text-sm">Total Olympiads</div>
+        <div class="stat-value" id="totalOlympiads">-</div>
+      </div>
+      <div class="stat-card">
+        <div class="text-muted text-sm">Total Results</div>
+        <div class="stat-value" id="totalResults">-</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Message Log</h3>
+      <div id="messageLog" class="message-log">
+        <div class="text-muted">Click "Connect" to start WebSocket connection...</div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let ws = null;
+    const API_URL = window.location.hostname === 'localhost' 
+      ? 'ws://localhost:3000/ws'
+      : `wss://${window.location.host}/ws`;
+
+    function log(type, data) {
+      const logEl = document.getElementById('messageLog');
+      const time = new Date().toLocaleTimeString();
+      const item = document.createElement('div');
+      item.className = 'message-item';
+      
+      let typeClass = 'message-in';
+      if (type === 'SEND') typeClass = 'message-out';
+      if (type === 'ERROR') typeClass = 'message-error';
+      
+      item.innerHTML = `
+        <span class="message-time">${time}</span>
+        <span class="${typeClass}">[${type}]</span>
+        <span>${typeof data === 'object' ? JSON.stringify(data) : data}</span>
+      `;
+      
+      logEl.appendChild(item);
+      logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function clearLog() {
+      document.getElementById('messageLog').innerHTML = '';
+    }
+
+    function updateStatus(status, text) {
+      const statusEl = document.getElementById('wsStatus');
+      statusEl.className = `ws-status ${status}`;
+      statusEl.innerHTML = `
+        <span class="status-dot ${status}"></span>
+        ${text}
+      `;
+    }
+
+    function connect() {
+      if (ws?.readyState === WebSocket.OPEN) {
+        log('ERROR', 'Already connected');
+        return;
+      }
+
+      updateStatus('connecting', 'Connecting...');
+      log('INFO', `Connecting to ${API_URL}...`);
+
+      ws = new WebSocket(API_URL);
+
+      ws.onopen = () => {
+        updateStatus('connected', 'Connected');
+        log('INFO', 'WebSocket connected');
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          log('RECV', data);
+          
+          if (data.type === 'stats') {
+            updateStats(data.data);
+          }
+        } catch (e) {
+          log('RECV', event.data);
+        }
+      };
+
+      ws.onerror = (error) => {
+        log('ERROR', 'WebSocket error');
+        updateStatus('disconnected', 'Error');
+      };
+
+      ws.onclose = () => {
+        updateStatus('disconnected', 'Disconnected');
+        log('INFO', 'WebSocket disconnected');
+        document.getElementById('statsContainer').style.display = 'none';
+      };
+    }
+
+    function disconnect() {
+      if (ws) {
+        ws.close();
+        ws = null;
+      }
+    }
+
+    function send(data) {
+      if (ws?.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify(data));
+        log('SEND', data);
+      } else {
+        log('ERROR', 'WebSocket not connected');
+      }
+    }
+
+    function authenticate() {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        log('ERROR', 'No token found in localStorage');
+        return;
+      }
+      
+      send({
+        type: 'auth',
+        payload: { token }
+      });
+    }
+
+    function subscribeAdmin() {
+      send({
+        type: 'subscribe',
+        payload: {
+          channels: ['admin:stats', 'admin:users']
+        }
+      });
+    }
+
+    function getStats() {
+      send({
+        type: 'getStats'
+      });
+    }
+
+    function updateStats(data) {
+      document.getElementById('statsContainer').style.display = 'grid';
+      if (data.totalUsers !== undefined) {
+        document.getElementById('totalUsers').textContent = data.totalUsers;
+      }
+      if (data.totalOlympiads !== undefined) {
+        document.getElementById('totalOlympiads').textContent = data.totalOlympiads;
+      }
+      if (data.totalResults !== undefined) {
+        document.getElementById('totalResults').textContent = data.totalResults;
+      }
+      
+      // Update recent results
+      if (data.recentResults?.length > 0) {
+        log('INFO', `Recent results: ${data.recentResults.length} items`);
+      }
+    }
+
+    // Auto-connect on page load
+    window.addEventListener('load', () => {
+      // Optional: auto-connect
+      // connect();
+    });
+  </script>
+</body>
+</html>

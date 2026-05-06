@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Natijalar Tahlili - Admin Panel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../styles/main.css">
+  <link rel="stylesheet" href="../styles/admin.css">
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('olimpx_theme');
+        if (t) document.documentElement.setAttribute('data-theme', t.replace(/"/g, ''));
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="admin-body">
+  <aside class="admin-sidebar" id="adminSidebar"></aside>
+
+  <main class="admin-main">
+    <header class="admin-header" id="adminHeader"></header>
+
+    <div class="admin-content">
+      <div class="admin-container">
+        <div class="admin-header-row mb-8">
+          <div>
+            <h1 class="admin-title">Natijalar Tahlili</h1>
+            <p class="admin-subtitle">Foydalanuvchilarning barcha topshirgan testlari tarixi</p>
+          </div>
+          <div class="admin-actions">
+            <button class="btn btn--outline" id="exportResultsBtn">
+              <span>📊 Excelga yuklash</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Filter Card -->
+        <div class="admin-card mb-8">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; align-items: flex-start;">
+
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Olimpiada</label>
+              <select id="resOlympiadFilter" class="form-input">
+                <option value="all">Barcha olimpiadalar</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Saralash</label>
+              <select id="resScoreFilter" class="form-input">
+                <option value="all">Barcha natijalar</option>
+                <option value="high">Yuqori ball (70%+)</option>
+                <option value="low">Past ball (< 70%)</option>
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label class="form-label">Qidiruv</label>
+              <div style="position: relative;">
+                <span style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); opacity: 0.5;">🔍</span>
+                <input type="text" id="resUserSearch" placeholder="Foydalanuvchi..." class="form-input" style="padding-left: 38px;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
+        <div class="admin-card">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Foydalanuvchi</th>
+                  <th>Olimpiada</th>
+                  <th>Ball</th>
+                  <th>Vaqt</th>
+                  <th>Sana</th>
+                  <th>Status</th>
+                  <th>Amallar</th>
+
+                </tr>
+              </thead>
+              <tbody id="resultsTableBody">
+                <!-- JS Populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script type="module" src="../scripts/admin-results.js"></script>
+
+</body>
+</html>

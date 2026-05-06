@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil - OlimpX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="../styles/pages.css">
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('olimpx_theme');
+        if (t) {
+          var theme = t.replace(/"/g, '');
+          document.documentElement.setAttribute('data-theme', theme);
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <nav class="navbar"></nav>
+
+  <main class="dashboard">
+    <div class="dashboard__container">
+      <div class="profile-container">
+        <div class="card animate-fadeIn">
+          <div class="card__header">
+            <h1 class="card__title">Mening profilim</h1>
+            <p class="card__subtitle">Shaxsiy ma'lumotlaringizni yangilang</p>
+          </div>
+
+          <div class="card__body">
+            <form id="profileForm">
+              <div class="form-group">
+                <label class="form-label">To'liq ism</label>
+                <input type="text" id="fullName" class="form-input" required>
+              </div>
+              
+              <div class="form-group">
+                <label class="form-label">Email manzil</label>
+                <input type="email" id="email" class="form-input" disabled style="background: var(--bg-secondary); opacity: 0.7;">
+              </div>
+
+              <div class="flex justify-end mt-8">
+                <button type="submit" class="btn btn--primary btn--lg">O'zgarishlarni saqlash</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <div class="card mt-8 animate-fadeIn" style="animation-delay: 0.1s;">
+          <div class="card__header">
+            <h1 class="card__title">Xavfsizlik</h1>
+            <p class="card__subtitle">Parolingizni yangilang</p>
+          </div>
+          <div class="card__body">
+            <form id="passwordForm">
+              <div class="form-group">
+                <label class="form-label">Yangi parol</label>
+                <input type="password" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Parolni tasdiqlash</label>
+                <input type="password" class="form-input">
+              </div>
+              <div class="flex justify-end mt-8">
+                <button type="submit" class="btn btn--secondary">Parolni yangilash</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script type="module" src="../scripts/profile.js"></script>
+</body>
+</html>

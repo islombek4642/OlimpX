@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Olimpiada - OlimpX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="../styles/pages.css">
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('olimpx_theme');
+        if (t) {
+          var theme = t.replace(/"/g, '');
+          document.documentElement.setAttribute('data-theme', theme);
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body>
+  <div class="quiz-page">
+    <header class="quiz-header">
+      <div class="quiz-container" style="padding: 0 var(--space-4); display: flex; justify-content: space-between; align-items: center;">
+        <div class="flex items-center gap-4">
+          <button id="exitBtn" class="btn btn--ghost" style="padding: 8px;">✕</button>
+          <div>
+            <h2 id="olympiadTitle" style="font-size: 16px; font-weight: 700; color: var(--text-primary);">Olimpiada</h2>
+            <p id="questionCounter" style="font-size: 12px; color: var(--text-tertiary);">Savol 0/0</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4">
+          <button id="stopQuizBtn" class="btn btn--outline" style="padding: 6px 16px; font-size: 13px; border-radius: 12px; height: fit-content; border-color: rgba(239, 68, 68, 0.2); color: #ef4444;">Testni to'xtatish</button>
+          <div class="timer-badge" id="timer">00:00</div>
+        </div>
+
+      </div>
+    </header>
+
+    <main class="quiz-container">
+      <div class="progress-bar-container">
+        <div class="progress-bar-fill" id="progressBar"></div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Question content injected here -->
+      </div>
+
+      <div class="flex justify-between items-center mt-8">
+        <button id="prevBtn" class="btn btn--secondary" style="padding: 12px 24px; border-radius: 100px;">Oldingisi</button>
+        <button id="nextBtn" class="btn btn--primary" style="padding: 12px 36px; border-radius: 100px;">Keyingisi</button>
+      </div>
+    </main>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script type="module" src="../scripts/quiz.js"></script>
+</body>
+</html>

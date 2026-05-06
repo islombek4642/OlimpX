@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>OlimpX - Online Olimpiada Platformasi</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    }
+    .redirect-box {
+      text-align: center;
+      padding: 2rem;
+    }
+    .logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 32px;
+      font-weight: bold;
+      margin: 0 auto 1rem;
+      box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
+    }
+    h1 { margin: 0 0 0.5rem; color: #1e3a8a; }
+    p { color: #4b5563; margin: 0; }
+    a { color: #2563eb; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="redirect-box">
+    <div class="logo">OX</div>
+    <h1>OlimpX</h1>
+    <p>Online Olimpiada Platformasi</p>
+    <p style="margin-top: 1rem;"><a href="./pages/login.html">Kirish sahifasiga o'tish →</a></p>
+  </div>
+  <script>
+    // Redirect to login page
+    window.location.replace('./pages/login.html');
+  </script>
+</body>
+</html>

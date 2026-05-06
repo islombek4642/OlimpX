@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - OlimpX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/main.css">
+  <link rel="stylesheet" href="../styles/pages.css">
+  <script>
+    (function() {
+      try {
+        var t = localStorage.getItem('olimpx_theme');
+        if (t) {
+          var theme = t.replace(/"/g, '');
+          document.documentElement.setAttribute('data-theme', theme);
+        }
+      } catch (e) {}
+    })();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <nav class="navbar"></nav>
+
+  <main class="dashboard">
+    <div class="dashboard__container">
+      <div class="dashboard__header">
+        <h1 class="dashboard__title">Xush kelibsiz, <span id="userName">Foydalanuvchi</span>!</h1>
+        <p class="dashboard__subtitle">Bugun qaysi olimpiadada ishtirok etamiz?</p>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="dashboard__stats-grid">
+        <div class="stat-card">
+          <div class="stat-card__icon stat-card__icon--blue">🎯</div>
+          <div class="stat-card__value" id="totalOlympiads">0</div>
+          <div class="stat-card__label">Umumiy urinishlar</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__icon stat-card__icon--green">📈</div>
+          <div class="stat-card__value" id="completedOlympiads">0</div>
+          <div class="stat-card__label">Tugatilgan testlar</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__icon stat-card__icon--amber">🏆</div>
+          <div class="stat-card__value" id="totalScore">0</div>
+          <div class="stat-card__label">To'plangan ballar</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card__icon stat-card__icon--purple">⚡</div>
+          <div class="stat-card__value" id="averageScore">0%</div>
+          <div class="stat-card__label">O'rtacha natija</div>
+        </div>
+      </div>
+
+      <!-- Promo Section (Moved below stats) -->
+      <div class="promo-card mb-10" style="flex-direction: row; align-items: center; text-align: left; gap: var(--space-8);">
+        <div style="font-size: 80px; flex-shrink: 0; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1));">🚀</div>
+        <div style="flex-grow: 1;">
+          <h2 style="font-size: 28px; font-weight: 800; color: var(--text-primary); margin-bottom: var(--space-2);">Yangi marralar sari!</h2>
+          <p style="color: var(--text-secondary); line-height: 1.6; max-width: 600px;">Bilimingizni oshirish va yangi natijalarni zabt etish vaqti keldi. Hoziroq yangi olimpiadada ishtirok eting.</p>
+        </div>
+        <div style="flex-shrink: 0;">
+          <button class="btn btn--start" id="startOlympiadBtn">Hoziroq boshlash</button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2">
+          <div class="chart-section">
+            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: var(--space-6);">Natijalar progressi</h3>
+            <div style="height: 300px; position: relative;">
+              <canvas id="performanceChart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-1">
+          <h3 style="font-size: 22px; font-weight: 700; margin-bottom: var(--space-6);">So'nggi faoliyat</h3>
+          <div id="activityList">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Countdown Modal -->
+  <div class="modal-overlay" id="countdownModal">
+    <div class="modal-content modal-content--countdown">
+      <div class="countdown-circle">
+        <span id="countdownNumber">5</span>
+        <svg class="countdown-svg" viewBox="0 0 140 140">
+          <circle r="60" cx="70" cy="70"></circle>
+        </svg>
+      </div>
+      <h2 class="modal-title mt-6">Tayyormisiz?</h2>
+      <p class="modal-text">Olimpiada bir necha soniyadan so'ng boshlanadi...</p>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+  <script type="module" src="../scripts/dashboard.js"></script>
+</body>
+</html>

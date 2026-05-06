@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <title>Test Olympiads API</title>
+</head>
+<body>
+    <h1>Test Olympiads API</h1>
+    <button onclick="testLogin()">Login</button>
+    <button onclick="testOlympiads()">Get Olympiads</button>
+    <div id="result"></div>
+
+    <script>
+        let token = '';
+        
+        async function testLogin() {
+            try {
+                const response = await fetch('http://localhost:3000/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'admin@olimpx.uz', password: 'Admin123!' })
+                });
+                const data = await response.json();
+                console.log('Login response:', data);
+                if (data.success) {
+                    token = data.data.accessToken;
+                    document.getElementById('result').innerHTML = '<p>Login successful! Token saved.</p>';
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                document.getElementById('result').innerHTML = '<p>Login error: ' + error.message + '</p>';
+            }
+        }
+        
+        async function testOlympiads() {
+            try {
+                const response = await fetch('http://localhost:3000/api/olympiads?status=active', {
+                    headers: { 'Authorization': 'Bearer ' + token }
+                });
+                const data = await response.json();
+                console.log('Olympiads response:', data);
+                document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+            } catch (error) {
+                console.error('Olympiads error:', error);
+                document.getElementById('result').innerHTML = '<p>Olympiads error: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>

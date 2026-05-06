@@ -1,0 +1,101 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String          @id @default(uuid())
+  fullName          String
+  email             String          @unique
+  passwordHash      String
+  role              String          @default("user")
+  isVerified        Boolean         @default(false)
+  createdAt         DateTime        @default(now())
+  lastLogin         DateTime?
+  results           Result[]
+  auditLogs         AuditLog[]
+  refreshTokens     RefreshToken[]
+  loginAttempts     Int             @default(0)
+  lockedUntil       DateTime?
+}
+
+model Olympiad {
+  id            String    @id @default(uuid())
+  title         String
+  description   String?
+  category      String?
+  icon          String?
+  duration      Int
+  status        String    @default("active")
+  createdAt     DateTime  @default(now())
+  questions     Question[]
+  results       Result[]
+
+  @@index([status])
+}
+
+model Question {
+  id            String    @id @default(uuid())
+  olympiadId    String
+  olympiad      Olympiad  @relation(fields: [olympiadId], references: [id], onDelete: Cascade)
+  text          String
+  options       Json
+  correctAnswer Int
+  duration      Int       @default(30) // seconds per question
+  createdAt     DateTime  @default(now())
+
+  @@index([olympiadId])
+}
+
+model Result {
+  id             String    @id @default(uuid())
+  userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  olympiadId     String
+  olympiad       Olympiad  @relation(fields: [olympiadId], references: [id], onDelete: Cascade)
+
+  score          Int
+  correctCount   Int
+  incorrectCount Int       @default(0)
+  skippedCount   Int       @default(0)
+  totalQuestions Int
+  timeTaken      String
+  averageTime    Int       @default(0)
+  details        Json?
+  createdAt      DateTime  @default(now())
+
+  @@index([userId])
+  @@index([olympiadId])
+}
+
+model AuditLog {
+  id            String    @id @default(uuid())
+  userId        String?
+  user          User?     @relation(fields: [userId], references: [id])
+  action        String    // e.g., "CREATE_OLYMPIAD", "DELETE_USER"
+  resourceType  String    // e.g., "Olympiad", "User"
+  resourceId    String?
+  details       Json?
+  ipAddress     String?
+  createdAt     DateTime  @default(now())
+
+  @@index([action])
+  @@index([resourceType])
+}
+
+model RefreshToken {
+  id            String    @id @default(uuid())
+  token         String    @unique
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt     DateTime
+  createdAt     DateTime  @default(now())
+  revokedAt     DateTime?
+
+  @@index([token])
+  @@index([userId])
+}

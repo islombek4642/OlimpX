@@ -1,0 +1,33 @@
+# Development Dockerfile
+FROM node:20-alpine
+
+# Install dependencies for development
+RUN apk add --no-cache \
+    git \
+    bash
+
+# Set working directory
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY backend/package*.json ./backend/
+
+# Install all dependencies (including devDependencies) and global nodemon
+RUN npm install && cd backend && npm install && npm install -g nodemon
+
+# Copy prisma schema for generation
+COPY backend/prisma ./backend/prisma
+
+# Generate Prisma client
+RUN cd backend && npx prisma generate
+
+# Expose port
+EXPOSE 3000
+
+# Set environment
+ENV NODE_ENV=development
+ENV PORT=3000
+
+# Default command
+CMD ["npm", "run", "dev"]

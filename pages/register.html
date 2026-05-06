@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ro'yxatdan o'tish - OlimpX</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+  <div class="auth-page">
+    <div class="auth-header-actions">
+      <!-- Theme toggle will be injected here -->
+    </div>
+    <div class="auth-page__content">
+      <div class="auth-card">
+        <!-- Header -->
+        <div class="auth-card__header">
+          <div class="auth-card__logo">OX</div>
+          <h1 class="auth-card__title">Ro'yxatdan o'tish</h1>
+          <p class="auth-card__subtitle">OlimpX platformasida o'z bilimingizni sinab ko'ring</p>
+        </div>
+
+        <!-- Form -->
+        <div class="auth-card__body">
+          <form id="registerForm" novalidate>
+            <!-- Full Name Field -->
+            <div class="form-group">
+              <input
+                type="text"
+                id="fullName"
+                name="fullName"
+                class="form-input"
+                placeholder="To'liq ismingizni kiriting"
+                autocomplete="name"
+                required
+              >
+              <label for="fullName" class="form-label">To'liq ism</label>
+            </div>
+
+            <!-- Email Field -->
+            <div class="form-group">
+              <input
+                type="email"
+                id="email"
+                name="email"
+                class="form-input"
+                placeholder="Email manzilni kiriting"
+                autocomplete="email"
+                required
+              >
+              <label for="email" class="form-label">Email manzil</label>
+            </div>
+
+            <!-- Password Field with Strength Indicator -->
+            <div class="form-group">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                class="form-input form-input--password"
+                placeholder="Parolni kiriting"
+                autocomplete="new-password"
+                required
+              >
+              <label for="password" class="form-label">Parol</label>
+              <button type="button" class="password-toggle" id="togglePassword" aria-label="Parolni ko'rsatish">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Password Strength Meter -->
+            <div class="password-strength mb-4" id="passwordStrength" style="display: none;">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-xs text-secondary" id="strengthLabel">Parol kuchi: Kuchsiz</span>
+                <span class="text-xs text-muted" id="strengthPercent">0%</span>
+              </div>
+              <div class="password-strength__bar">
+                <div class="password-strength__fill" id="strengthFill" style="width: 0%;"></div>
+              </div>
+              <div class="password-strength__checks mt-3" id="strengthChecks">
+                <div class="strength-check" data-check="minLength">
+                  <span class="strength-check__icon">○</span>
+                  <span class="strength-check__text">Kamida 8 ta belgi</span>
+                </div>
+                <div class="strength-check" data-check="uppercase">
+                  <span class="strength-check__icon">○</span>
+                  <span class="strength-check__text">Katta harf (A-Z)</span>
+                </div>
+                <div class="strength-check" data-check="lowercase">
+                  <span class="strength-check__icon">○</span>
+                  <span class="strength-check__text">Kichik harf (a-z)</span>
+                </div>
+                <div class="strength-check" data-check="number">
+                  <span class="strength-check__icon">○</span>
+                  <span class="strength-check__text">Raqam (0-9)</span>
+                </div>
+                <div class="strength-check" data-check="special">
+                  <span class="strength-check__icon">○</span>
+                  <span class="strength-check__text">Maxsus belgi (!@#$%)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Confirm Password Field -->
+            <div class="form-group">
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                class="form-input form-input--password"
+                placeholder="Parolni qayta kiriting"
+                autocomplete="new-password"
+                required
+              >
+              <label for="confirmPassword" class="form-label">Parolni tasdiqlang</label>
+              <button type="button" class="password-toggle" id="toggleConfirmPassword" aria-label="Parolni ko'rsatish">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                  <circle cx="12" cy="12" r="3"/>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Terms Checkbox -->
+            <div class="mb-6">
+              <label class="flex items-start gap-3 cursor-pointer">
+                <input type="checkbox" id="agreeTerms" class="mt-1 rounded border-gray-300">
+                <span class="text-sm text-secondary">
+                  <a href="#" class="text-brand hover:underline">Foydalanish shartlari</a> va
+                  <a href="#" class="text-brand hover:underline">Maxfiylik siyosati</a>ni qabul qilaman
+                </span>
+              </label>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" id="submitBtn" class="btn btn--primary btn--full btn--lg" disabled>
+              <span class="btn__text">Ro'yxatdan o'tish</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="auth-card__footer">
+          <p class="auth-card__link">
+            Allaqachon akkauntingiz bormi? <a href="login.html">Kirish</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script type="module" src="../scripts/register.js"></script>
+</body>
+</html>
