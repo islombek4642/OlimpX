@@ -187,24 +187,31 @@ export const importOlympiad = async (req, res, next) => {
       return res.status(400).json({ error: 'Fayl bo\'sh yoki uni o\'qib bo\'lmadi' });
     }
 
-    // 2. Parse questions (Same logic as frontend but on backend)
+    // 2. Parse questions (More robust logic)
     const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
     const questionsData = [];
     let currentQ = null;
 
-    const qPattern = /(?:^\d+[\.\)\s]+)?\?/;
-    const correctPattern = /^\+/;
-    const wrongPattern = /^=/;
+    // Patternlar: 
+    // Savol: "1. Savol matni" yoki "Savol matni?"
+    // To'g'ri javob: "+ Javob" yoki "* Javob"
+    // Noto'g'ri javob: "= Javob" yoki "- Javob"
+    
+    const qPattern = /^\d+[\.\)\s]+|.*\?$/; 
+    const correctPattern = /^[\+\*]/;
+    const wrongPattern = /^[=\-]/;
 
     const duration = parseInt(defaultDuration) || 30;
 
     lines.forEach((line) => {
-      if (qPattern.test(line)) {
+      if (qPattern.test(line) && !correctPattern.test(line) && !wrongPattern.test(line)) {
+        // Avvalgi savolni saqlash
         if (currentQ && currentQ.options.length >= 2 && currentQ.correctAnswer !== -1) {
           questionsData.push(currentQ);
         }
+        // Yangi savol boshlash
         currentQ = {
-          text: line.replace(qPattern, '').replace(/\?$/, '').trim(),
+          text: line.replace(/^\d+[\.\)\s]+/, '').trim(),
           options: [],
           correctAnswer: -1,
           duration
@@ -217,12 +224,16 @@ export const importOlympiad = async (req, res, next) => {
       }
     });
 
+    // Oxirgi savolni ham qo'shish
     if (currentQ && currentQ.options.length >= 2 && currentQ.correctAnswer !== -1) {
       questionsData.push(currentQ);
     }
 
     if (questionsData.length === 0) {
-      return res.status(400).json({ error: 'Fayldan birorta ham to\'g\'ri formatdagi savol topilmadi' });
+      return res.status(400).json({ 
+        error: 'Word fayl formati noto\'g\'ri yoki savollar topilmadi.',
+        formatGuide: 'Format: Savol matni? keyingi qatorda + To\'g\'ri javob, keyingi qatorlarda = Noto\'g\'ri javob'
+      });
     }
 
     // 3. Create Olympiad and Questions in a transaction
