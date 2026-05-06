@@ -199,10 +199,25 @@ if [ "$SSL_MODE" = "true" ] && [ "${NEED_CERT:-false}" = "true" ]; then
         echo -e "${GREEN}✅ Nginx SSL bilan qayta ishga tushirildi.${NC}"
     else
         echo -e "${RED}❌ SSL sertifikat olishda xatolik!${NC}"
-        echo -e "${YELLOW}Tekshiring:${NC}"
-        echo -e "  1. DNS A-record $DOMAIN → serveringiz IP ga ko'rsatilganmi?"
-        echo -e "  2. Port 80 ochiqmi? (firewall tekshiring)"
-        echo -e "  3. Qayta urinish: docker run --rm -v \$(pwd)/certbot-data:/etc/letsencrypt -v \$(pwd)/certbot-www:/var/www/certbot certbot/certbot certonly --webroot --webroot-path=/var/www/certbot --email $SSL_EMAIL --agree-tos -d $DOMAIN"
+        echo -e "${YELLOW}⚠️ Sayt HTTP (port 8081) orqali ishga tushirilmoqda...${NC}"
+        
+        # Fallback HTTP-only proxy config
+        cat > nginx/nginx.conf << NGINX_FALLBACK
+upstream olimpx_backend { server app:3000; }
+server {
+    listen 80;
+    server_name $DOMAIN www.$DOMAIN $SERVER_IP;
+    location / {
+        proxy_pass http://olimpx_backend;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host \$host;
+        proxy_cache_bypass \$http_upgrade;
+    }
+}
+NGINX_FALLBACK
+        docker exec olimpx-nginx nginx -s reload
     fi
 fi
 
