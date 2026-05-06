@@ -54,7 +54,7 @@ if [ ! -f .env ]; then
     if [ -f .env.example ]; then
         echo -e "${YELLOW}⚠️ .env fayli topilmadi. .env.example dan nusxa olinmoqda...${NC}"
         cp .env.example .env
-        echo -e "${RED}❌ Iltimos, yangi yaratilgan .env faylini tahrirlang!${NC}"
+        echo -e "${RED}❌ Iltimos, yangi yaratilgan .env faylini tahrirlang va qaytadan ishga tushiring!${NC}"
         exit 1
     else
         echo -e "${RED}❌ .env fayli topilmadi!${NC}"
@@ -62,8 +62,11 @@ if [ ! -f .env ]; then
     fi
 fi
 
-# DOMAIN va SSL holatini aniqlash
+# .env dan o'zgaruvchilarni olish
 DOMAIN=$(grep "^DOMAIN[[:space:]]*=" .env | cut -d'=' -f2- | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | tr -d '"' | tr -d "'")
+SSL_EMAIL=$(grep "^SSL_EMAIL[[:space:]]*=" .env | cut -d'=' -f2- | tr -d '"' | tr -d "'" | xargs)
+PG_USER=$(grep "^POSTGRES_USER[[:space:]]*=" .env | cut -d'=' -f2- | tr -d '"' | tr -d "'" | tr -d '[:space:]')
+PG_USER="${PG_USER:-postgres}"
 
 # 3. Docker konteynerlarni yangilash
 echo -e "\n${BLUE}Step 3: Docker konteynerlarni qurish va ishga tushirish...${NC}"
@@ -73,11 +76,51 @@ if ! command -v docker &> /dev/null; then
     exit 1
 fi
 
+# SSL rejimini aniqlash
+SSL_MODE=false
 if [ -n "$DOMAIN" ] && [ "$DOMAIN" != "your-domain.com" ] && [ -f "docker-compose.ssl.yml" ]; then
-    echo -e "🔐 SSL (Nginx + Certbot) rejimi tanlandi."
+    echo -e "🔐 SSL (Nginx + Certbot) rejimi tanlandi. Domain: ${YELLOW}$DOMAIN${NC}"
     DOCKER_FILE="docker-compose.ssl.yml"
+    SSL_MODE=true
+
+    # nginx.conf ni templatedan yaratish
+    if [ -f "nginx/nginx.conf.template" ]; then
+        mkdir -p nginx
+        sed "s/\${DOMAIN}/$DOMAIN/g" nginx/nginx.conf.template > nginx/nginx.conf
+        echo -e "${GREEN}✅ nginx.conf yaratildi (domain: $DOMAIN)${NC}"
+    else
+        echo -e "${RED}❌ nginx/nginx.conf.template topilmadi!${NC}"
+        exit 1
+    fi
+
+    # Agar sertifikat mavjud bo'lmasa, vaqtinchalik HTTP-only nginx.conf yaratamiz
+    CERT_PATH="/etc/letsencrypt/live/$DOMAIN/fullchain.pem"
+    if [ ! -d "$(pwd)/certbot-data/live/$DOMAIN" ]; then
+        echo -e "${YELLOW}📜 SSL sertifikat topilmadi. Birinchi bosqich: HTTP-only nginx bilan sertifikat olinadi...${NC}"
+        cat > nginx/nginx.conf << NGINX_HTTP_ONLY
+server {
+    listen 80;
+    listen [::]:80;
+    server_name $DOMAIN www.$DOMAIN;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+
+    location / {
+        return 200 'OlimpX SSL initialization in progress...';
+        add_header Content-Type text/plain;
+    }
+}
+NGINX_HTTP_ONLY
+        NEED_CERT=true
+    else
+        echo -e "${GREEN}✅ SSL sertifikat mavjud.${NC}"
+        NEED_CERT=false
+    fi
 else
     echo -e "🚀 Standart rejim (SSL'siz) tanlandi."
+    echo -e "   ${YELLOW}💡 SSL uchun .env ga DOMAIN=sizning-domeningiz.com qo'shing${NC}"
     DOCKER_FILE="docker-compose.yml"
 fi
 
@@ -94,10 +137,6 @@ fi
 echo -e "\n${BLUE}Step 4: Database sozlash (Migratsiya va Seed)...${NC}"
 echo "⏳ PostgreSQL tayyor bo'lishini kutilmoqda..."
 
-# pg_isready orqali postgres tayyor bo'lguncha kutamiz (max 60 soniya)
-PG_USER=$(grep "^POSTGRES_USER[[:space:]]*=" .env | cut -d'=' -f2- | tr -d '"' | tr -d "'" | tr -d '[:space:]')
-PG_USER="${PG_USER:-postgres}"
-
 RETRIES=30
 until docker exec olimpx-db pg_isready -U "$PG_USER" -q; do
     RETRIES=$((RETRIES - 1))
@@ -109,7 +148,7 @@ until docker exec olimpx-db pg_isready -U "$PG_USER" -q; do
     sleep 2
 done
 echo -e "${GREEN}✅ PostgreSQL tayyor.${NC}"
-sleep 2  # App konteyneriga ham biroz vaqt beramiz
+sleep 2
 
 echo "🔄 Prisma migratsiya va seed ishga tushmoqda..."
 docker exec olimpx-app npm run db:setup
@@ -121,9 +160,60 @@ else
     echo -e "${YELLOW}Qayta urinib ko'rish: docker exec olimpx-app npm run db:setup${NC}"
 fi
 
+# 5. SSL sertifikat olish (birinchi marta)
+if [ "$SSL_MODE" = "true" ] && [ "${NEED_CERT:-false}" = "true" ]; then
+    echo -e "\n${BLUE}Step 5: SSL sertifikat olish (Certbot)...${NC}"
+    SSL_EMAIL="${SSL_EMAIL:-admin@$DOMAIN}"
+    echo "📧 Email: $SSL_EMAIL"
+    echo "🌐 Domain: $DOMAIN"
+    sleep 5  # Nginx tayyor bo'lishini kutish
+
+    # Avval faqat asosiy domenga sertifikat olishga urinib ko'ramiz
+    docker run --rm \
+        -v "$(pwd)/certbot-data:/etc/letsencrypt" \
+        -v "$(pwd)/certbot-www:/var/www/certbot" \
+        certbot/certbot certonly \
+        --webroot \
+        --webroot-path=/var/www/certbot \
+        --email "$SSL_EMAIL" \
+        --agree-tos \
+        --no-eff-email \
+        -d "$DOMAIN" \
+        -d "www.$DOMAIN" 2>/dev/null || \
+    docker run --rm \
+        -v "$(pwd)/certbot-data:/etc/letsencrypt" \
+        -v "$(pwd)/certbot-www:/var/www/certbot" \
+        certbot/certbot certonly \
+        --webroot \
+        --webroot-path=/var/www/certbot \
+        --email "$SSL_EMAIL" \
+        --agree-tos \
+        --no-eff-email \
+        -d "$DOMAIN"
+
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✅ SSL sertifikat muvaffaqiyatli olindi!${NC}"
+        # To'liq SSL nginx.conf ni tiklash
+        sed "s/\${DOMAIN}/$DOMAIN/g" nginx/nginx.conf.template > nginx/nginx.conf
+        docker exec olimpx-nginx nginx -s reload
+        echo -e "${GREEN}✅ Nginx SSL bilan qayta ishga tushirildi.${NC}"
+    else
+        echo -e "${RED}❌ SSL sertifikat olishda xatolik!${NC}"
+        echo -e "${YELLOW}Tekshiring:${NC}"
+        echo -e "  1. DNS A-record $DOMAIN → serveringiz IP ga ko'rsatilganmi?"
+        echo -e "  2. Port 80 ochiqmi? (firewall tekshiring)"
+        echo -e "  3. Qayta urinish: docker run --rm -v \$(pwd)/certbot-data:/etc/letsencrypt -v \$(pwd)/certbot-www:/var/www/certbot certbot/certbot certonly --webroot --webroot-path=/var/www/certbot --email $SSL_EMAIL --agree-tos -d $DOMAIN"
+    fi
+fi
+
 echo -e "\n${GREEN}==========================================${NC}"
 echo -e "${GREEN}✅ Docker Deployment muvaffaqiyatli yakunlandi!${NC}"
-echo -e "${GREEN}🌐 Sayt: https://${DOMAIN:-localhost}${NC}"
+if [ "$SSL_MODE" = "true" ]; then
+    echo -e "${GREEN}🌐 Sayt: https://${DOMAIN}${NC}"
+else
+    echo -e "${GREEN}🌐 Sayt: http://$(hostname -I | awk '{print $1}'):3000${NC}"
+    echo -e "${YELLOW}💡 SSL uchun .env ga DOMAIN va SSL_EMAIL qo'shing${NC}"
+fi
 echo -e "${GREEN}==========================================${NC}"
 
 docker ps | grep olimpx
