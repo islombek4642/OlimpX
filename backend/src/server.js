@@ -140,7 +140,8 @@ app.use(errorHandler);
 // SERVER START + GRACEFUL SHUTDOWN
 // ============================================
 const server = app.listen(PORT, () => {
-  const host = process.env.DOMAIN || 'localhost';
+  const host = process.env.DOMAIN || process.env.SERVER_IP || 'localhost';
+  const isPublic = process.env.DOMAIN || process.env.SERVER_IP;
   const protocol = process.env.DOMAIN ? 'https' : 'http';
   const wsProtocol = process.env.DOMAIN ? 'wss' : 'ws';
   const portSuffix = process.env.DOMAIN ? '' : `:${PORT}`;
