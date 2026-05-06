@@ -65,57 +65,8 @@ async function main() {
     console.log('✅ Test user ready');
   }
 
-  // 3. Create Sample Olympiads (check if exists to avoid duplicates)
-  const olympiadCount = await prisma.olympiad.count();
-  if (olympiadCount === 0) {
-    await prisma.olympiad.create({
-      data: {
-        title: 'Matematika - Mantiqiy savollar',
-        description: 'Boshlang\'ich darajadagi mantiqiy savollar to\'plami.',
-        category: 'Matematika',
-        icon: '📐',
-        duration: 10,
-        status: 'active',
-        questions: {
-          create: [
-            {
-              text: 'Agar 5 ta mushuk 5 ta sichqonni 5 minutda tutsa, 100 ta mushuk 100 ta sichqonni necha minutda tutadi?',
-              options: ['100 minutda', '5 minutda', '50 minutda', '1 minutda'],
-              correctAnswer: 1
-            },
-            {
-              text: 'Ketma-ket kelgan uchta toq sonning yig\'indisi 51 ga teng. Eng kichik sonni toping.',
-              options: ['13', '15', '17', '19'],
-              correctAnswer: 1
-            }
-          ]
-        }
-      }
-    });
-
-    await prisma.olympiad.create({
-      data: {
-        title: 'Informatika - Web dasturlash asoslari',
-        description: 'HTML, CSS va JavaScript asoslari bo\'yicha test savollari.',
-        category: 'IT',
-        icon: '💻',
-        duration: 15,
-        status: 'active',
-        questions: {
-          create: [
-            {
-              text: 'HTML da giperhavola yaratish uchun qaysi teg ishlatiladi?',
-              options: ['<link>', '<a>', '<href>', '<url>'],
-              correctAnswer: 1
-            }
-          ]
-        }
-      }
-    });
-    console.log('✅ Sample olympiads created');
-  } else {
-    console.log('ℹ️ Olympiads already exist, skipping creation');
-  }
+  // 3. Create Sample Olympiads (Cleaned - only real data should be added via Admin Panel)
+  console.log('ℹ️ Skipping sample olympiads creation (Clean production mode)');
 
   console.log('🏁 Seeding finished!');
 }
