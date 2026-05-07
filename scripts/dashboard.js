@@ -21,14 +21,18 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Check authentication
     if (!requireAuth()) return;
 
-    // Sync latest profile from server (only if data is stale)
+    // Sync latest profile from server
+    // We sync if it's the first visit of the session or after a test
+    const hasJustFinishedTest = sessionStorage.getItem('last_quiz_result');
     const lastSync = localStorage.getItem('olimpx_last_sync');
     const now = Date.now();
-    const SYNC_INTERVAL = 5 * 60 * 1000; // 5 minutes
     
-    if (!lastSync || (now - parseInt(lastSync)) > SYNC_INTERVAL) {
+    // Always sync if just finished a test OR first time in session OR 1 minute passed
+    if (hasJustFinishedTest || !lastSync || (now - parseInt(lastSync)) > 60000) {
       await syncProfile();
       localStorage.setItem('olimpx_last_sync', now.toString());
+      // Clear the flag so we don't sync on every dashboard visit
+      if (hasJustFinishedTest) sessionStorage.removeItem('last_quiz_result');
     }
 
     // Initialize UI
