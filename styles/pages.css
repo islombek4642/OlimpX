@@ -82,6 +82,15 @@
   margin-bottom: var(--space-8);
 }
 
+@media (max-width: 640px) {
+  .chart-section {
+    padding: var(--space-4);
+  }
+  .chart-section h3 {
+    font-size: 18px !important;
+  }
+}
+
 .btn--start {
   background: linear-gradient(135deg, var(--color-primary-600), var(--color-primary-800));
   color: white; padding: var(--space-4) var(--space-10);

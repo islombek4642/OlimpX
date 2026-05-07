@@ -319,8 +319,23 @@ document.addEventListener('DOMContentLoaded', async () => {
               display: false
             },
             ticks: {
-              color: isDark ? '#9ca3af' : '#6b7280'
+              color: isDark ? '#9ca3af' : '#6b7280',
+              maxRotation: 45,
+              minRotation: 45,
+              autoSkip: true,
+              maxTicksLimit: 6,
+              font: {
+                size: window.innerWidth < 640 ? 10 : 12
+              }
             }
+          }
+        },
+        layout: {
+          padding: {
+            left: 0,
+            right: 15,
+            top: 10,
+            bottom: 0
           }
         }
       }
