@@ -17,6 +17,7 @@ services:
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
       - REDIS_ENABLED=${REDIS_ENABLED:-false}
       - PORT=3000
+      - DOMAIN=${DOMAIN}
       - VIRTUAL_HOST=${DOMAIN:-localhost},www.${DOMAIN:-localhost}
       - LETSENCRYPT_HOST=${DOMAIN:-localhost},www.${DOMAIN:-localhost}
       - VIRTUAL_PORT=3000
