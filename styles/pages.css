@@ -404,11 +404,13 @@
 .score-circle {
   width: 160px; height: 160px;
   border-radius: 50%;
-  background: conic-gradient(var(--color-primary-600) var(--score-deg, 0deg), var(--border-light) 0);
+  --score-deg: 0deg; /* Default value */
+  background: conic-gradient(var(--color-primary-600) var(--score-deg), var(--border-light) 0deg);
   margin: 0 auto var(--space-6);
   display: flex; align-items: center; justify-content: center;
   position: relative;
   box-shadow: var(--shadow-lg);
+  transition: --score-deg 1.5s ease;
 }
 
 .score-circle::after {

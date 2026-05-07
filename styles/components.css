@@ -1236,13 +1236,17 @@
   display: flex;
   gap: var(--space-4);
   justify-content: center;
+  flex-wrap: wrap;
 }
 
 .modal-actions .btn {
-  padding: 12px 28px;
+  padding: 12px 24px;
   border-radius: 100px;
   font-weight: 600;
   flex: 1;
+  min-width: 140px;
+  white-space: normal;
+  line-height: 1.2;
 }
 /* ============================================
    COUNTDOWN MODAL

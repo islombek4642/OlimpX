@@ -209,9 +209,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             `).join('')}
           </div>
           
-          <div class="mt-8" style="display: flex; justify-content: center;">
-            <button class="btn btn--secondary" id="skipQuestionBtn" style="background: #facc15; color: #854d0e; border: none; font-weight: 600;">
+          <div class="mt-8" style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+            <button class="btn btn--secondary" id="skipQuestionBtn" style="background: #facc15; color: #854d0e; border: none; font-weight: 600; width: 220px;">
                ⏭️ O'tkazib yuborish
+            </button>
+            <button class="btn btn--outline" id="stopQuizBtnDynamic" style="border-color: rgba(239, 68, 68, 0.3); color: #ef4444; font-size: 14px; width: 220px; border-radius: 12px;">
+               🛑 Testni yakunlash
             </button>
           </div>
         </div>
@@ -226,6 +229,24 @@ document.addEventListener('DOMContentLoaded', async () => {
       document.getElementById('skipQuestionBtn').addEventListener('click', () => {
         handleSkip();
       });
+
+      // Dynamic stop button
+      const dynamicStopBtn = document.getElementById('stopQuizBtnDynamic');
+      if (dynamicStopBtn) {
+        dynamicStopBtn.addEventListener('click', async () => {
+          const confirmed = await showConfirmModal({
+            title: 'Testni to\'xtatish',
+            message: 'Testni hozir tugatib, natijalarni ko\'rmoqchimisiz?',
+            confirmText: 'Tugatish',
+            cancelText: 'Davom ettirish',
+            type: 'info'
+          });
+
+          if (confirmed) {
+            finishQuiz();
+          }
+        });
+      }
     }
 
     async function handleOptionClick(selectedShuffledIdx, btn) {
@@ -358,21 +379,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       });
     }
 
-    if (stopBtn) {
-      stopBtn.addEventListener('click', async () => {
-        const confirmed = await showConfirmModal({
-          title: 'Testni to\'xtatish',
-          message: 'Testni hozir tugatib, natijalarni ko\'rmoqchimisiz?',
-          confirmText: 'Tugatish',
-          cancelText: 'Davom ettirish',
-          type: 'info'
-        });
-
-        if (confirmed) {
-          finishQuiz();
-        }
-      });
-    }
+    // Old stopBtn removed from header
 
     startTimer();
     updateUI();
