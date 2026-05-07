@@ -65,11 +65,12 @@ export const deleteAttempt = async (req, res, next) => {
     const { olympiadId } = req.params;
     const userId = req.user.id;
 
-    await prisma.quizAttempt.delete({
+    await prisma.quizAttempt.deleteMany({
       where: {
-        userId_olympiadId: { userId, olympiadId }
+        userId,
+        olympiadId
       }
-    }).catch(() => {}); // Ignore if already deleted
+    });
 
     res.json({ success: true, message: 'Urinish tozalandi' });
   } catch (error) {

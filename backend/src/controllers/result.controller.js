@@ -136,11 +136,12 @@ export const submitResult = async (req, res, next) => {
     });
 
     // 3. Delete the active attempt record
-    await prisma.quizAttempt.delete({
+    await prisma.quizAttempt.deleteMany({
       where: {
-        userId_olympiadId: { userId, olympiadId }
+        userId,
+        olympiadId
       }
-    }).catch(() => {}); // Ignore if already deleted
+    });
 
     // Broadcast to admins via WebSocket
     try {
