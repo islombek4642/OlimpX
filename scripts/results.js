@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (!result) {
       console.warn('No result found, redirecting...');
-      navigateTo('dashboard.html');
+      navigateTo('/dashboard');
       return;
     }
 

@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
               countdownModal.classList.remove('modal-overlay--active');
               
               setTimeout(() => {
-                navigateTo(`quiz.html?id=${id}`);
+                navigateTo(`/quiz?id=${id}`);
               }, 100);
               return;
             }

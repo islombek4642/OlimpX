@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           <div style="font-size: 64px; margin-bottom: 20px;">📊</div>
           <h4 style="font-size: 20px; font-weight: 600;">Natijalar hali yo'q</h4>
           <p style="color: var(--text-secondary); margin-bottom: 30px;">Siz hali birorta ham olimpiadada qatnashmadingiz.</p>
-          <a href="dashboard.html" class="btn btn--primary" style="padding: 12px 30px; border-radius: 100px;">Olimpiadani boshlash</a>
+          <a href="/dashboard" class="btn btn--primary" style="padding: 12px 30px; border-radius: 100px;">Olimpiadani boshlash</a>
         </div>
       `;
       return;

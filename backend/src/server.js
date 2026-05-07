@@ -117,6 +117,24 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../../index.html'));
 });
 
+// Clean URLs for Pages
+const pages = [
+  { path: '/login', file: 'login.html' },
+  { path: '/register', file: 'register.html' },
+  { path: '/dashboard', file: 'dashboard.html' },
+  { path: '/olympiads', file: 'olympiads.html' },
+  { path: '/quiz', file: 'quiz.html' },
+  { path: '/results', file: 'results.html' },
+  { path: '/history', file: 'history.html' },
+  { path: '/profile', file: 'profile.html' }
+];
+
+pages.forEach(p => {
+  app.get(p.path, (req, res) => {
+    res.sendFile(path.join(__dirname, `../../pages/${p.file}`));
+  });
+});
+
 // Health Check with Database Status
 app.get('/health', async (req, res) => {
   try {

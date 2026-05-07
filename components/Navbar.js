@@ -22,7 +22,7 @@ export function renderNavbar(activePage = 'dashboard') {
 
   navContainer.innerHTML = `
     <div class="navbar__container">
-      <a href="dashboard.html" class="navbar__brand">
+      <a href="/dashboard" class="navbar__brand">
         <div class="navbar__logo">OX</div>
         <span>OlimpX</span>
       </a>
@@ -35,15 +35,15 @@ export function renderNavbar(activePage = 'dashboard') {
       </button>
 
       <div class="navbar__menu" id="navMenu">
-        <a href="dashboard.html" class="navbar__item ${activePage === 'dashboard' ? 'navbar__item--active' : ''}">Bosh sahifa</a>
-        <a href="olympiads.html" class="navbar__item ${activePage === 'olympiads' ? 'navbar__item--active' : ''}">Olimpiadalar</a>
-        <a href="history.html" class="navbar__item ${activePage === 'history' ? 'navbar__item--active' : ''}">Natijalar</a>
-        <a href="profile.html" class="navbar__item ${activePage === 'profile' ? 'navbar__item--active' : ''}">Profil</a>
-        ${isUserAdmin ? `<a href="../admin/index.html" class="navbar__item" style="color: var(--color-primary-600); font-weight: 700;">🔧 Admin</a>` : ''}
+        <a href="/dashboard" class="navbar__item ${activePage === 'dashboard' ? 'navbar__item--active' : ''}">Bosh sahifa</a>
+        <a href="/olympiads" class="navbar__item ${activePage === 'olympiads' ? 'navbar__item--active' : ''}">Olimpiadalar</a>
+        <a href="/history" class="navbar__item ${activePage === 'history' ? 'navbar__item--active' : ''}">Natijalar</a>
+        <a href="/profile" class="navbar__item ${activePage === 'profile' ? 'navbar__item--active' : ''}">Profil</a>
+        ${isUserAdmin ? `<a href="/admin/" class="navbar__item" style="color: var(--color-primary-600); font-weight: 700;">🔧 Admin</a>` : ''}
         
         <div class="navbar__user-mobile">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4);">
-            <a href="profile.html" class="navbar__user-info">
+            <a href="/profile" class="navbar__user-info">
               <div class="navbar__user-avatar">${escapeHtml(userInitial)}</div>
               <span>${escapeHtml(userFullName || 'Foydalanuvchi')}</span>
             </a>
@@ -78,7 +78,7 @@ export function renderNavbar(activePage = 'dashboard') {
             </svg>
           </button>
           <button class="btn btn--danger btn--sm" id="logoutBtn" style="padding: 8px 16px;">Chiqish</button>
-          <a href="profile.html" class="navbar__avatar" title="Profilni ko'rish">${escapeHtml(userInitial)}</a>
+          <a href="/profile" class="navbar__avatar" title="Profilni ko'rish">${escapeHtml(userInitial)}</a>
         </div>
       </div>
     </div>
@@ -126,7 +126,7 @@ export function renderNavbar(activePage = 'dashboard') {
 
     if (confirmed) {
       logout();
-      navigateTo('login.html');
+      navigateTo('/login');
     }
   };
 
@@ -147,9 +147,9 @@ export function renderNavbar(activePage = 'dashboard') {
     if (currentIndex === -1) return; // Not a main page
 
     if (e.key === 'ArrowRight' && currentIndex < pages.length - 1) {
-      navigateTo(`${pages[currentIndex + 1]}.html`);
+      navigateTo(`/${pages[currentIndex + 1]}`);
     } else if (e.key === 'ArrowLeft' && currentIndex > 0) {
-      navigateTo(`${pages[currentIndex - 1]}.html`);
+      navigateTo(`/${pages[currentIndex - 1]}`);
     }
   };
 

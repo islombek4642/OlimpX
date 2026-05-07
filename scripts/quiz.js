@@ -355,12 +355,12 @@ document.addEventListener('DOMContentLoaded', async () => {
           }));
           // Clear active attempt on success
           await api.attempts.clear(olympiadId);
-          navigateTo('results.html?id=' + result.id);
+          navigateTo('/results?id=' + result.id);
         }
       } catch (error) {
         console.error('Quiz Submission Error:', error);
         toast.error('Natijani saqlashda xatolik yuz berdi');
-        navigateTo('dashboard.html');
+        navigateTo('/dashboard');
       }
     }
 
@@ -374,7 +374,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
         
         if (confirmed) {
-          navigateTo('dashboard.html');
+          navigateTo('/dashboard');
         }
       });
     }

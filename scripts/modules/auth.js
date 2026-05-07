@@ -123,11 +123,11 @@ export function getCurrentUser() {
 export function requireAuth(redirectUrl = window.location.pathname) {
   if (!isAuthenticated()) {
     const params = new URLSearchParams();
-    if (redirectUrl && !redirectUrl.includes('login.html')) {
+    if (redirectUrl && !redirectUrl.includes('/login')) {
       params.set('redirect', redirectUrl);
     }
     const query = params.toString();
-    const loginPath = '/pages/login.html';
+    const loginPath = '/login';
     window.location.href = `${loginPath}${query ? '?' + query : ''}`;
     return false;
   }
@@ -149,7 +149,7 @@ export function requireAdmin() {
   if (!requireAuth()) return false;
   
   if (!isAdmin()) {
-    window.location.href = '/pages/dashboard.html';
+    window.location.href = '/dashboard';
     return false;
   }
   return true;
@@ -161,9 +161,9 @@ export function requireAdmin() {
 export function redirectIfAuthenticated() {
   if (isAuthenticated()) {
     if (isAdmin()) {
-      window.location.href = '/admin/index.html';
+      window.location.href = '/admin/';
     } else {
-      window.location.href = '/pages/dashboard.html';
+      window.location.href = '/dashboard';
     }
     return true;
   }

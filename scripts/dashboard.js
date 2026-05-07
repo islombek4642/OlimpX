@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const user = getCurrentUser();
     if (!user) {
       logout();
-      navigateTo('login.html');
+      navigateTo('/login');
       return;
     }
 
@@ -126,10 +126,10 @@ document.addEventListener('DOMContentLoaded', async () => {
               const response = await api.olympiads.getAll('active');
               if (response.success && response.data.length > 0) {
                 const firstOlympiadId = response.data[0].id;
-                navigateTo(`quiz.html?id=${firstOlympiadId}`);
+                navigateTo(`/quiz?id=${firstOlympiadId}`);
               } else {
                 toast.error('Hozircha faol olimpiadalar yo\'q');
-                navigateTo('olympiads.html');
+                navigateTo('/olympiads');
               }
             } catch (error) {
               toast.error('Olimpiadani yuklashda xatolik yuz berdi');
@@ -163,12 +163,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     activityListEl.innerHTML = `
       <div style="text-align: center; padding: 30px; color: var(--text-tertiary);">
         <p>Hozircha faoliyat mavjud emas.</p>
-        <a href="olympiads.html" class="btn btn--sm btn--primary mt-4">Testni boshlash</a>
+        <a href="/olympiads" class="btn btn--sm btn--primary mt-4">Testni boshlash</a>
       </div>
     `;
   } else {
     activityListEl.innerHTML = history.slice(0, 3).map(res => `
-      <div class="activity-item animate-fadeIn" onclick="window.location.href='history.html'">
+      <div class="activity-item animate-fadeIn" onclick="window.location.href='/history'">
         <div class="activity-item__icon ${res.score >= 70 ? 'activity-item__icon--success' : 'activity-item__icon--warning'}">
           ${res.score >= 70 ? '🏆' : '📝'}
         </div>

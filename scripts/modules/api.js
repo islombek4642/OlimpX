@@ -41,8 +41,8 @@ async function request(endpoint, options = {}) {
       localStorage.removeItem('olimpx_token');
       localStorage.removeItem('olimpx_current_user');
       
-      if (!window.location.pathname.includes('login.html')) {
-        window.location.href = '/pages/login.html';
+      if (!window.location.pathname.includes('/login')) {
+        window.location.href = '/login';
       }
     }
 
