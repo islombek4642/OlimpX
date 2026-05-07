@@ -275,19 +275,29 @@
   width: 0%; transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+#quizContainer {
+  min-height: 450px; /* Savollar almashganda sakramasligi uchun */
+  display: flex;
+  flex-direction: column;
+}
+
 .question-card {
   background: var(--bg-elevated);
   border-radius: var(--radius-3xl);
-  padding: var(--space-10);
+  padding: var(--space-8);
   border: 1px solid var(--border-light);
   box-shadow: var(--shadow-lg);
   margin-bottom: var(--space-8);
-  animation: slideIn 0.5s ease;
+  animation: fadeIn 0.3s ease-out; /* SlideIn o'rniga fadeIn */
 }
 
-@keyframes slideIn {
-  from { opacity: 0; transform: translateX(20px); }
-  to { opacity: 1; transform: translateX(0); }
+@media (max-width: 480px) {
+  #quizContainer {
+    min-height: 400px;
+  }
+  .question-card {
+    padding: var(--space-6);
+  }
 }
 
 .option-btn {
