@@ -187,57 +187,64 @@ export const importOlympiad = async (req, res, next) => {
       return res.status(400).json({ error: 'Fayl bo\'sh yoki uni o\'qib bo\'lmadi' });
     }
 
-    // 2. Parse questions (More robust logic)
+    // 2. Parse questions (Multi-format support)
     const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
     const questionsData = [];
-    let currentQ = null;
+    let currentQuestion = null;
 
-    // Patternlar: 
-    // Savol: "1. Savol matni" yoki "Savol matni?"
-    // To'g'ri javob: "+ Javob", "* Javob", "A) Javob" (agar keyingi qatorlarda bo'lsa)
-    
-    // Savol patterni: Raqam bilan boshlangan yoki so'roq belgisi bilan tugagan qator
-    const qPattern = /^(\d+[\.\)\s]+|Savol:?)/i; 
-    const correctPattern = /^[\+\*]/;
-    const wrongPattern = /^[=\-]/;
-    const optionPattern = /^[A-E][\.\)\s]/i; // A) B) C) D) format
+    for (const line of lines) {
+      // 3.1. Detect Question
+      // Case A: Starts with "?" (e.g., ?Question text)
+      // Case B: Starts with number (e.g., 1. Question text)
+      // Case C: Ends with "?" and is long enough
+      const qMatch = line.match(/^(\?|(\d+[\.\)\s]+))(.*)/);
+      const isOption = line.startsWith('+') || line.startsWith('=') || line.match(/^[a-eA-E1-4][\.\)\s]/);
 
-    lines.forEach((line) => {
-      // Yangi savol aniqlash
-      if ((qPattern.test(line) || line.endsWith('?')) && !correctPattern.test(line) && !wrongPattern.test(line) && !optionPattern.test(line)) {
-        if (currentQ && currentQ.options.length >= 2) {
-          questionsData.push(currentQ);
+      if ((qMatch || (line.endsWith('?') && line.length > 10)) && !isOption) {
+        if (currentQuestion && currentQuestion.options.length >= 2) {
+          questionsData.push(currentQuestion);
         }
-        currentQ = {
-          text: line.replace(qPattern, '').trim(),
+        
+        currentQuestion = {
+          text: qMatch ? qMatch[3].trim() : line.trim(),
           options: [],
-          correctAnswer: -1,
+          correctAnswer: 0,
           duration: parseInt(defaultDuration) || 30
         };
-      } 
-      // To'g'ri javob patterni
-      else if (correctPattern.test(line) && currentQ) {
-        currentQ.options.push(line.replace(correctPattern, '').trim());
-        currentQ.correctAnswer = currentQ.options.length - 1;
-      } 
-      // Noto'g'ri javob patterni
-      else if (wrongPattern.test(line) && currentQ) {
-        currentQ.options.push(line.replace(wrongPattern, '').trim());
+        continue;
       }
-      // A) B) C) patterni (birinchi kelgani to'g'ri deb faraz qilinadi agar belgi bo'lmasa)
-      else if (optionPattern.test(line) && currentQ) {
-        currentQ.options.push(line.replace(optionPattern, '').trim());
-        // Agar hali to'g'ri javob tanlanmagan bo'lsa, birinchi variantni default to'g'ri deb olamiz (yoki foydalanuvchi + belgisini qo'yishi kerak)
-        if (currentQ.correctAnswer === -1 && line.startsWith('+')) {
-           currentQ.correctAnswer = currentQ.options.length - 1;
+
+      // 3.2. Detect Options
+      // Case A: Custom symbols (+ for correct, = for wrong)
+      // Case B: Standard letters (A, B, C, D)
+      if (currentQuestion) {
+        const optMatch = line.match(/^([\+\=]|[a-eA-E1-4][\.\)\s]+)\s*(.*)/);
+        
+        if (optMatch) {
+          const prefix = optMatch[1].trim();
+          const optionText = optMatch[2].trim();
+          
+          if (optionText) {
+            currentQuestion.options.push(optionText);
+            // Mark as correct if prefix is '+' or 'A)'/ '1.' (default first option)
+            if (prefix === '+' || (currentQuestion.options.length === 1 && !prefix.match(/^[\=\-]/))) {
+              currentQuestion.correctAnswer = currentQuestion.options.length - 1;
+            }
+          }
+        } else if (line.length > 0) {
+          // If no prefix, append to question text or previous option
+          if (currentQuestion.options.length === 0) {
+            currentQuestion.text += ' ' + line;
+          } else {
+            currentQuestion.options[currentQuestion.options.length - 1] += ' ' + line;
+          }
         }
       }
-    });
+    }
 
-    // Oxirgi savolni ham qo'shish
-    if (currentQ && currentQ.options.length >= 2) {
-      if (currentQ.correctAnswer === -1) currentQ.correctAnswer = 0; // Fallback
-      questionsData.push(currentQ);
+    // Add last question
+    if (currentQuestion && currentQuestion.options.length >= 2) {
+      questionsData.push(currentQuestion);
     }
 
     if (questionsData.length === 0) {
