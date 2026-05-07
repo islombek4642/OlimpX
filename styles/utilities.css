@@ -3,6 +3,10 @@
    ============================================ */
 
 /* Layout Utilities */
+.no-scroll {
+  overflow: hidden !important;
+}
+
 .container {
   width: 100%;
   max-width: 1200px;

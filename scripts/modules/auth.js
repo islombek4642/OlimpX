@@ -127,7 +127,7 @@ export function requireAuth(redirectUrl = window.location.pathname) {
       params.set('redirect', redirectUrl);
     }
     const query = params.toString();
-    const loginPath = window.location.pathname.includes('/admin/') ? '../pages/login.html' : 'login.html';
+    const loginPath = '/pages/login.html';
     window.location.href = `${loginPath}${query ? '?' + query : ''}`;
     return false;
   }
@@ -149,7 +149,7 @@ export function requireAdmin() {
   if (!requireAuth()) return false;
   
   if (!isAdmin()) {
-    window.location.href = '../pages/dashboard.html';
+    window.location.href = '/pages/dashboard.html';
     return false;
   }
   return true;
@@ -161,9 +161,9 @@ export function requireAdmin() {
 export function redirectIfAuthenticated() {
   if (isAuthenticated()) {
     if (isAdmin()) {
-      window.location.href = '../admin/index.html';
+      window.location.href = '/admin/index.html';
     } else {
-      window.location.href = 'dashboard.html';
+      window.location.href = '/pages/dashboard.html';
     }
     return true;
   }

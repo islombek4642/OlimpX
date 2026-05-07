@@ -42,8 +42,7 @@ async function request(endpoint, options = {}) {
       localStorage.removeItem('olimpx_current_user');
       
       if (!window.location.pathname.includes('login.html')) {
-        const currentPath = window.location.pathname;
-        window.location.href = currentPath.includes('/admin/') ? '../pages/login.html' : 'login.html';
+        window.location.href = '/pages/login.html';
       }
     }
 

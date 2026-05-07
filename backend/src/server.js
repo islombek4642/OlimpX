@@ -62,7 +62,18 @@ app.set('trust proxy', 1);
 // SECURITY MIDDLEWARE
 // ============================================
 app.use(helmet({
-  contentSecurityPolicy: false,
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:", "blob:"],
+      connectSrc: ["'self'", "wss:", "ws:"],
+      objectSrc: ["'none'"],
+      upgradeInsecureRequests: [],
+    },
+  },
   crossOriginEmbedderPolicy: false
 }));
 
@@ -93,8 +104,18 @@ app.use(sanitizeBody);
 app.use(sanitizeQuery);
 app.use(sanitizeParams);
 
-// Serve Static Files (Frontend)
-app.use(express.static(path.join(__dirname, '../../')));
+// Restricted Static File Serving (Only frontend assets)
+app.use('/admin', express.static(path.join(__dirname, '../../admin')));
+app.use('/pages', express.static(path.join(__dirname, '../../pages')));
+app.use('/scripts', express.static(path.join(__dirname, '../../scripts')));
+app.use('/styles', express.static(path.join(__dirname, '../../styles')));
+app.use('/components', express.static(path.join(__dirname, '../../components')));
+app.use('/assets', express.static(path.join(__dirname, '../../assets')));
+
+// Serve main landing page
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, '../../index.html'));
+});
 
 // Health Check with Database Status
 app.get('/health', async (req, res) => {

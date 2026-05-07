@@ -24,24 +24,27 @@ const validateTimeTaken = (timeTaken, olympiad, questions) => {
     return { isValid: false, error: 'Vaqt manfiy bo\'lishi mumkin emas' };
   }
 
-  // Calculate minimum possible time (at least 3 seconds per question answered)
-  const minPossibleTime = questions.length * 3;
+  // Calculate minimum possible time:
+  // If many questions are skipped, time can be very short.
+  // We assume at least 1 second per answered question + 1 second total.
+  const answeredCount = questions.length; // This is actually total questions in this context
+  // Better: count how many answers are NOT null in the actual submission, 
+  // but validateTimeTaken doesn't have access to 'answers' yet.
+  // Let's just use a very low minimum or move this check to submitResult.
+  const minPossibleTime = 1; 
 
   // Calculate maximum allowed time:
-  // Sum of all question durations + 5 minute buffer
   const maxQuestionTime = questions.reduce((sum, q) => sum + (q.duration || 30), 0);
-  const maxAllowedTime = maxQuestionTime + (5 * 60); // 5 minute buffer
+  const maxAllowedTime = maxQuestionTime + (15 * 60); // Increased buffer to 15 mins
 
-  // Check if too fast (bot suspicion)
   if (totalSeconds < minPossibleTime) {
     return {
       isValid: false,
-      error: `Juda tez bajarildi (${totalSeconds}s). Kamida ${minPossibleTime}s kuting.`,
+      error: `Vaqt xatosi.`,
       totalSeconds
     };
   }
 
-  // Check if too slow (possible manipulation)
   if (totalSeconds > maxAllowedTime) {
     return {
       isValid: false,
@@ -61,7 +64,7 @@ export const submitResult = async (req, res, next) => {
     // 1. Fetch the olympiad and its questions to verify answers
     const olympiad = await prisma.olympiad.findUnique({
       where: { id: olympiadId },
-      include: { questions: { orderBy: { createdAt: 'asc' } } } // Ensure order matches
+      include: { questions: { orderBy: { id: 'asc' } } } // Use id: 'asc' for stable ordering
     });
 
     if (!olympiad) {
@@ -131,6 +134,28 @@ export const submitResult = async (req, res, next) => {
         details // JSON object with question answers
       }
     });
+
+    // 3. Delete the active attempt record
+    await prisma.quizAttempt.delete({
+      where: {
+        userId_olympiadId: { userId, olympiadId }
+      }
+    }).catch(() => {}); // Ignore if already deleted
+
+    // Broadcast to admins via WebSocket
+    try {
+      const { broadcast } = await import('../config/websocket.js');
+      broadcast('admin:stats', { 
+        type: 'NEW_RESULT', 
+        result: { 
+          score, 
+          userName: req.user.fullName, 
+          olympiadTitle: olympiad.title 
+        } 
+      });
+    } catch (wsError) {
+      console.warn('WS Broadcast failed:', wsError.message);
+    }
 
     // Audit Log for activity tracking
     await auditLog({

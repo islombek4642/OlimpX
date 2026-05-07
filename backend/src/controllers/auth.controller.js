@@ -132,6 +132,14 @@ export const register = async (req, res, next) => {
     const accessToken = generateAccessToken(user.id, user.role);
     const refreshToken = await generateRefreshToken(user.id);
 
+    // Broadcast to admins via WebSocket
+    try {
+      const { broadcast } = await import('../config/websocket.js');
+      broadcast('admin:stats', { type: 'NEW_USER', user: { fullName: user.fullName } });
+    } catch (wsError) {
+      console.warn('WS Broadcast failed:', wsError.message);
+    }
+
     res.status(201).json({
       success: true,
       message: 'Foydalanuvchi muvaffaqiyatli ro\'yxatdan o\'tdi',

@@ -19,6 +19,7 @@ model User {
   results           Result[]
   auditLogs         AuditLog[]
   refreshTokens     RefreshToken[]
+  quizAttempts      QuizAttempt[]
   loginAttempts     Int             @default(0)
   lockedUntil       DateTime?
 }
@@ -34,6 +35,7 @@ model Olympiad {
   createdAt     DateTime  @default(now())
   questions     Question[]
   results       Result[]
+  quizAttempts  QuizAttempt[]
 
   @@index([status])
 }
@@ -103,7 +105,9 @@ model RefreshToken {
 model QuizAttempt {
   id             String    @id @default(uuid())
   userId         String
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   olympiadId     String
+  olympiad       Olympiad  @relation(fields: [olympiadId], references: [id], onDelete: Cascade)
   currentIdx     Int       @default(0)
   answers        Json      // Array of selected options
   timeLeft       Int       // remaining seconds for current question

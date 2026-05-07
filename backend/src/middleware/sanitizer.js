@@ -17,9 +17,6 @@ const sanitizeString = (value) => {
   // Trim whitespace
   value = value.trim();
   
-  // Escape HTML entities
-  value = escapeHtml(value);
-  
   return value;
 };
 

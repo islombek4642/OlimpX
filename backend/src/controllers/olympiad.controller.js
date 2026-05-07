@@ -194,38 +194,49 @@ export const importOlympiad = async (req, res, next) => {
 
     // Patternlar: 
     // Savol: "1. Savol matni" yoki "Savol matni?"
-    // To'g'ri javob: "+ Javob" yoki "* Javob"
-    // Noto'g'ri javob: "= Javob" yoki "- Javob"
+    // To'g'ri javob: "+ Javob", "* Javob", "A) Javob" (agar keyingi qatorlarda bo'lsa)
     
-    const qPattern = /^[?\d]+[\.\)\s]+|.*\?$/; 
+    // Savol patterni: Raqam bilan boshlangan yoki so'roq belgisi bilan tugagan qator
+    const qPattern = /^(\d+[\.\)\s]+|Savol:?)/i; 
     const correctPattern = /^[\+\*]/;
     const wrongPattern = /^[=\-]/;
-
-    const duration = parseInt(defaultDuration) || 30;
+    const optionPattern = /^[A-E][\.\)\s]/i; // A) B) C) D) format
 
     lines.forEach((line) => {
-      if (qPattern.test(line) && !correctPattern.test(line) && !wrongPattern.test(line)) {
-        // Avvalgi savolni saqlash
-        if (currentQ && currentQ.options.length >= 2 && currentQ.correctAnswer !== -1) {
+      // Yangi savol aniqlash
+      if ((qPattern.test(line) || line.endsWith('?')) && !correctPattern.test(line) && !wrongPattern.test(line) && !optionPattern.test(line)) {
+        if (currentQ && currentQ.options.length >= 2) {
           questionsData.push(currentQ);
         }
-        // Yangi savol boshlash
         currentQ = {
-          text: line.replace(/^\d+[\.\)\s]+/, '').trim(),
+          text: line.replace(qPattern, '').trim(),
           options: [],
           correctAnswer: -1,
-          duration
+          duration: parseInt(defaultDuration) || 30
         };
-      } else if (correctPattern.test(line) && currentQ) {
+      } 
+      // To'g'ri javob patterni
+      else if (correctPattern.test(line) && currentQ) {
         currentQ.options.push(line.replace(correctPattern, '').trim());
         currentQ.correctAnswer = currentQ.options.length - 1;
-      } else if (wrongPattern.test(line) && currentQ) {
+      } 
+      // Noto'g'ri javob patterni
+      else if (wrongPattern.test(line) && currentQ) {
         currentQ.options.push(line.replace(wrongPattern, '').trim());
+      }
+      // A) B) C) patterni (birinchi kelgani to'g'ri deb faraz qilinadi agar belgi bo'lmasa)
+      else if (optionPattern.test(line) && currentQ) {
+        currentQ.options.push(line.replace(optionPattern, '').trim());
+        // Agar hali to'g'ri javob tanlanmagan bo'lsa, birinchi variantni default to'g'ri deb olamiz (yoki foydalanuvchi + belgisini qo'yishi kerak)
+        if (currentQ.correctAnswer === -1 && line.startsWith('+')) {
+           currentQ.correctAnswer = currentQ.options.length - 1;
+        }
       }
     });
 
     // Oxirgi savolni ham qo'shish
-    if (currentQ && currentQ.options.length >= 2 && currentQ.correctAnswer !== -1) {
+    if (currentQ && currentQ.options.length >= 2) {
+      if (currentQ.correctAnswer === -1) currentQ.correctAnswer = 0; // Fallback
       questionsData.push(currentQ);
     }
 

@@ -3,52 +3,136 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>OlimpX - Online Olimpiada Platformasi</title>
-  <style>
-    body {
-      font-family: system-ui, -apple-system, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      margin: 0;
-      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-    }
-    .redirect-box {
-      text-align: center;
-      padding: 2rem;
-    }
-    .logo {
-      width: 80px;
-      height: 80px;
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-      border-radius: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 32px;
-      font-weight: bold;
-      margin: 0 auto 1rem;
-      box-shadow: 0 10px 40px rgba(59, 130, 246, 0.3);
-    }
-    h1 { margin: 0 0 0.5rem; color: #1e3a8a; }
-    p { color: #4b5563; margin: 0; }
-    a { color: #2563eb; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-  </style>
+  <title>OlimpX — Zamonaviy Bilimlar Platformasi</title>
+  
+  <!-- SEO -->
+  <meta name="description" content="OlimpX - Onlayn olimpiadalar va bilimlar testlash platformasi. O'zingizni sinab ko'ring va natijalarni baholang.">
+  <meta name="keywords" content="olimpiada, test, onlayn test, bilim, talabalar uchun, olimpx">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Styles -->
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/landing.css">
 </head>
 <body>
-  <div class="redirect-box">
-    <div class="logo">OX</div>
-    <h1>OlimpX</h1>
-    <p>Online Olimpiada Platformasi</p>
-    <p style="margin-top: 1rem;"><a href="./pages/login.html">Kirish sahifasiga o'tish →</a></p>
-  </div>
-  <script>
-    // Redirect to login page
-    window.location.replace('./pages/login.html');
-  </script>
+  <!-- Animated Background -->
+  <div class="blob" style="top: 10%; left: 10%;"></div>
+  <div class="blob" style="bottom: 10%; right: 10%; background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, rgba(15, 23, 42, 0) 70%);"></div>
+
+  <!-- Navbar -->
+  <nav>
+    <a href="#" class="logo-container">
+      <div class="logo-box">OX</div>
+      <span class="logo-text">OlimpX</span>
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a href="#features">Imkoniyatlar</a>
+      <a href="#about">Biz haqimizda</a>
+      <a href="pages/login.html" class="btn-login">Kirish</a>
+    </div>
+    <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <span class="badge">Yangi davr boshlanmoqda ✨</span>
+      <h1>Bilimlaringizni <br> <span style="color: var(--primary)">Keyingi Bosqichga</span> Olib Chiqing</h1>
+      <p class="hero-desc">Zamonaviy va qulay platforma orqali onlayn olimpiadalarda qatnashing, natijalaringizni tahlil qiling va sertifikatlarga ega bo'ling.</p>
+      <div class="cta-group">
+        <a href="pages/register.html" class="btn-primary">Hoziroq boshlash</a>
+        <a href="pages/login.html" class="btn-login">Tizimga kirish</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <div class="section-title">
+      <h2>Nega aynan OlimpX?</h2>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">🚀</div>
+        <h3>Tezkor Testlar</h3>
+        <p>Hech qanday kutishlarsiz, bir zumda test jarayoniga kirishing va real vaqtda natijalarni ko'ring.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Chuqur Analitika</h3>
+        <p>Xatolaringiz ustida ishlash uchun batafsil tahliliy hisobotlar va diagrammalar taqdim etiladi.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎓</div>
+        <h3>Sertifikatlar</h3>
+        <p>Muvaffaqiyatli yakunlangan olimpiadalar uchun PDF formatidagi rasmiy sertifikatlarga ega bo'ling.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about">
+    <div class="about-grid">
+      <div class="about-image">
+        <div class="floating-cards">
+          <div class="f-card f-card-1">
+            <span class="f-card-icon">👥</span>
+            <div>
+              <span class="f-card-value">10K+</span>
+              <span class="f-card-label">O'quvchilar</span>
+            </div>
+          </div>
+          <div class="f-card f-card-2">
+            <span class="f-card-icon">📝</span>
+            <div>
+              <span class="f-card-value">500+</span>
+              <span class="f-card-label">Testlar</span>
+            </div>
+          </div>
+          <div class="f-card f-card-3">
+            <span class="f-card-icon">🏆</span>
+            <div>
+              <span class="f-card-value">100%</span>
+              <span class="f-card-label">Ishonchli</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="about-content">
+        <h2 class="about-title">Kelajak Ta'limi <span>Shu Yerda</span></h2>
+        <p class="about-desc">
+          OlimpX — bu shunchaki test platformasi emas. Biz o'quvchilar va talabalarga o'z bilimlarini real vaqt rejimida sinab ko'rish, raqobatlashish va o'z ustida ishlash uchun zamonaviy ekotizim yaratdik. 
+          <br><br>
+          Bizning maqsadimiz — ta'limni hamma uchun ochiq, qiziqarli va yuqori texnologiyali qilishdir. Har bir foydalanuvchi bizning platformamizda o'z salohiyatini kashf etishiga ishonamiz.
+        </p>
+        <div class="about-stats">
+          <div class="stat-item">
+            <h4>10K+</h4>
+            <p>Foydalanuvchilar</p>
+          </div>
+          <div class="stat-item">
+            <h4>500+</h4>
+            <p>Olimpiadalar</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer style="padding: 4rem 10%; border-top: 1px solid var(--glass-border); text-align: center; color: #64748b;">
+    <p>&copy; 2026 OlimpX Platformasi. Barcha huquqlar himoyalangan.</p>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="scripts/landing.js"></script>
 </body>
 </html>
