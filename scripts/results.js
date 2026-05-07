@@ -184,7 +184,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         try {
           setButtonLoading(downloadBtn, true, 'Sertifikat yaratilmoqda...');
           
-          const { jsPDF } = window.jspdf;
+          const { jsPDF } = window.jspdf || {};
+          if (!jsPDF) {
+            throw new Error('jsPDF kutubxonasi yuklanmagan');
+          }
+
           const doc = new jsPDF({
             orientation: 'landscape',
             unit: 'mm',
@@ -229,12 +233,13 @@ document.addEventListener('DOMContentLoaded', async () => {
           doc.setFont('helvetica', 'bold');
           doc.setFontSize(38);
           doc.setTextColor(255, 255, 255);
-          doc.text(user.fullName.toUpperCase(), pageWidth / 2, 110, { align: 'center' });
+          const displayName = (user && user.fullName ? user.fullName : 'Foydalanuvchi').toUpperCase();
+          doc.text(displayName, pageWidth / 2, 110, { align: 'center' });
 
           doc.setFontSize(18);
           doc.setFont('helvetica', 'italic');
           doc.setTextColor(148, 163, 184);
-          const certTitle = result.title || (olympiad ? olympiad.title : 'Olimpiada');
+          const certTitle = result.title || (result.olympiad ? result.olympiad.title : 'Olimpiada');
           doc.text(`"${certTitle}" olimpiadasidagi yuksak ishtiroki uchun.`, pageWidth / 2, 125, { align: 'center' });
 
 
