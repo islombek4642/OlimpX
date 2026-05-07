@@ -29,25 +29,49 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     let result = null;
     
-    if (resultId) {
+    // 1. Try to get from sessionStorage first (most immediate source after quiz)
+    const storedResult = sessionStorage.getItem('last_quiz_result');
+    if (storedResult) {
+      try {
+        const parsed = JSON.parse(storedResult);
+        // Ensure it's the result we're looking for if ID is present
+        if (!resultId || parsed.id === resultId || parsed.id == resultId) {
+          result = parsed;
+          console.log('📊 Result loaded from sessionStorage');
+        }
+      } catch (e) {
+        console.error('Session storage parse error:', e);
+      }
+    }
+
+    // 2. If not in session or ID mismatch, fetch from API
+    if (!result && resultId) {
       try {
         const response = await api.results.getById(resultId);
         if (response.success) {
           result = response.data;
-          // Sync with storage for consistency
           sessionStorage.setItem('last_quiz_result', JSON.stringify(result));
+          console.log('📊 Result loaded from API');
         }
       } catch (err) {
         console.error('Failed to fetch result by ID:', err);
       }
     }
     
-    // Fallback to sessionStorage if no ID or fetch failed
     if (!result) {
-      result = JSON.parse(sessionStorage.getItem('last_quiz_result'));
+      toast.info('Natija yuklanmoqda...');
+      // Small delay and one more try from API if we have ID
+      if (resultId) {
+        await new Promise(r => setTimeout(r, 1000));
+        const retryRes = await api.results.getById(resultId);
+        if (retryRes.success) {
+          result = retryRes.data;
+        }
+      }
     }
-    
+
     if (!result) {
+      console.warn('No result found, redirecting...');
       navigateTo('dashboard.html');
       return;
     }
