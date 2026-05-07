@@ -33,7 +33,7 @@ export function renderAdminSidebar(activePage = 'dashboard') {
       `).join('')}
     </nav>
 
-    <div style="margin-top: auto; padding: var(--space-4);">
+    <div style="margin-top: auto; padding: var(--space-4) var(--space-4) calc(var(--space-8) + env(safe-area-inset-bottom, 20px));">
       <a href="/dashboard" class="admin-nav-item" style="color: var(--color-primary-600);">
         <span>🏠</span>
         <span class="admin-nav-label">Asosiy sayt</span>
