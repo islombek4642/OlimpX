@@ -1,12 +1,9 @@
 /**
  * Admin Sidebar Component
  */
-export function renderAdminSidebar(activePage = 'dashboard', isSubPage = false) {
+export function renderAdminSidebar(activePage = 'dashboard') {
   const sidebar = document.getElementById('adminSidebar');
   if (!sidebar) return;
-
-  const prefix = isSubPage ? '' : 'pages/';
-  const rootPrefix = isSubPage ? '../' : '';
 
   const menuItems = [
     { id: 'dashboard', label: 'Boshqaruv', icon: '📊', url: '/admin' },

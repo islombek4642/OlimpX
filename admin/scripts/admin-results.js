@@ -12,7 +12,7 @@ import { api } from '../../scripts/modules/api.js';
 document.addEventListener('DOMContentLoaded', () => {
   if (!requireAdmin()) return;
   initTheme();
-  renderAdminSidebar('results', true);
+  renderAdminSidebar('results');
   renderAdminHeader();
 
   const tableBody = document.getElementById('resultsTableBody');

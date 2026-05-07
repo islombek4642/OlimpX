@@ -11,7 +11,7 @@ import { api } from '../../scripts/modules/api.js';
 document.addEventListener('DOMContentLoaded', async () => {
   if (!requireAdmin()) return;
   initTheme();
-  renderAdminSidebar('users', true);
+  renderAdminSidebar('users');
   renderAdminHeader();
 
   const tableBody = document.getElementById('usersTableBody');

@@ -13,7 +13,7 @@ import { escapeHtml } from '../../scripts/modules/utils.js';
 document.addEventListener('DOMContentLoaded', async () => {
   if (!requireAdmin()) return;
   initTheme();
-  renderAdminSidebar('olympiads', true);
+  renderAdminSidebar('olympiads');
   renderAdminHeader();
 
   const tableBody = document.getElementById('olympiadsTableBody');

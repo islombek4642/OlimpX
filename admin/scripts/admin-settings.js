@@ -10,7 +10,7 @@ import { api } from '../../scripts/modules/api.js';
 document.addEventListener('DOMContentLoaded', async () => {
   if (!requireAdmin()) return;
   initTheme();
-  renderAdminSidebar('settings', true);
+  renderAdminSidebar('settings');
   renderAdminHeader();
 
   const user = getCurrentUser();
