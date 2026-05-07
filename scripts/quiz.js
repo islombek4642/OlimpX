@@ -26,8 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const olympiadId = urlParams.get('id');
     
     if (!olympiadId) {
-      toast.error('Olimpiada ID ko\'rsatilmadi');
-      navigateTo('dashboard.html');
+      navigateTo('/dashboard');
       return;
     }
 
@@ -35,8 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const originalQuestions = await getQuestionsByOlympiadId(olympiadId);
     
     if (!olympiad || !originalQuestions.length) {
-      toast.error('Olimpiada ma\'lumotlari topilmadi');
-      navigateTo('dashboard.html');
+      navigateTo('/dashboard');
       return;
     }
 

@@ -73,9 +73,9 @@ document.addEventListener('DOMContentLoaded', async () => {
           // Role-based redirection
           setTimeout(() => {
             if (result.user && result.user.role === 'admin') {
-              navigateTo('../admin/index.html');
+              navigateTo('/admin');
             } else {
-              navigateTo('dashboard.html');
+              navigateTo('/dashboard');
             }
           }, 500);
         } else {

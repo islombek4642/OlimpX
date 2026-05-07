@@ -248,7 +248,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       passwordStrength.style.display = 'none';
 
       setTimeout(() => {
-        window.location.href = 'dashboard.html';
+        window.location.href = '/dashboard';
       }, 800);
     } else {
       setButtonLoading(submitBtn, false);

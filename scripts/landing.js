@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loginBtns.forEach(btn => {
       if (btn.innerText.trim().toLowerCase() === 'kirish' || btn.innerText.trim().toLowerCase() === 'login') {
         btn.textContent = 'Dashboard';
-        btn.href = 'pages/dashboard.html';
+        btn.href = '/dashboard';
       }
     });
   }
