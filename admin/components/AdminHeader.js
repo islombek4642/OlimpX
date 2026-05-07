@@ -29,7 +29,7 @@ export function renderAdminHeader() {
 
       <div class="admin-header__divider"></div>
 
-      <a href="settings.html" class="admin-header__user" style="text-decoration: none; cursor: pointer; color: inherit;">
+      <a href="/admin/settings" class="admin-header__user" style="text-decoration: none; cursor: pointer; color: inherit;">
         <div class="admin-header__user-text">
           <div class="admin-header__user-name">Administrator</div>
           <div class="admin-header__user-role">Super Admin</div>

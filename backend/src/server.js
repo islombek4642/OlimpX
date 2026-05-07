@@ -135,6 +135,24 @@ pages.forEach(p => {
   });
 });
 
+// Clean URLs for Admin Pages
+const adminPages = [
+  { path: '/admin', file: 'index.html' },
+  { path: '/admin/reports', file: 'reports.html' },
+  { path: '/admin/olympiads', file: 'pages/olympiads.html' },
+  { path: '/admin/questions', file: 'pages/questions.html' },
+  { path: '/admin/results', file: 'pages/results.html' },
+  { path: '/admin/users', file: 'pages/users.html' },
+  { path: '/admin/settings', file: 'pages/settings.html' },
+  { path: '/admin/websocket-test', file: 'pages/websocket-test.html' }
+];
+
+adminPages.forEach(p => {
+  app.get(p.path, (req, res) => {
+    res.sendFile(path.join(__dirname, `../../admin/${p.file}`));
+  });
+});
+
 // Health Check with Database Status
 app.get('/health', async (req, res) => {
   try {

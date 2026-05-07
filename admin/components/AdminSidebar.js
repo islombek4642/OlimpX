@@ -9,18 +9,18 @@ export function renderAdminSidebar(activePage = 'dashboard', isSubPage = false) 
   const rootPrefix = isSubPage ? '../' : '';
 
   const menuItems = [
-    { id: 'dashboard', label: 'Boshqaruv', icon: '📊', url: '/admin/index.html' },
-    { id: 'olympiads', label: 'Olimpiadalar', icon: '🏆', url: '/admin/pages/olympiads.html' },
-    { id: 'questions', label: 'Savollar bazasi', icon: '❓', url: '/admin/pages/questions.html' },
-    { id: 'users', label: 'Foydalanuvchilar', icon: '👥', url: '/admin/pages/users.html' },
-    { id: 'results', label: 'Natijalar', icon: '📈', url: '/admin/pages/results.html' },
-    { id: 'reports', label: 'Hisobotlar', icon: '📋', url: '/admin/reports.html' },
-    { id: 'settings', label: 'Sozlamalar', icon: '⚙️', url: '/admin/pages/settings.html' }
+    { id: 'dashboard', label: 'Boshqaruv', icon: '📊', url: '/admin' },
+    { id: 'olympiads', label: 'Olimpiadalar', icon: '🏆', url: '/admin/olympiads' },
+    { id: 'questions', label: 'Savollar bazasi', icon: '❓', url: '/admin/questions' },
+    { id: 'users', label: 'Foydalanuvchilar', icon: '👥', url: '/admin/users' },
+    { id: 'results', label: 'Natijalar', icon: '📈', url: '/admin/results' },
+    { id: 'reports', label: 'Hisobotlar', icon: '📋', url: '/admin/reports' },
+    { id: 'settings', label: 'Sozlamalar', icon: '⚙️', url: '/admin/settings' }
   ];
 
   sidebar.innerHTML = `
     <div class="admin-sidebar__header">
-      <a href="/admin/index.html" class="admin-sidebar__logo">
+      <a href="/admin" class="admin-sidebar__logo">
         <span>OlimpX</span>
         <span style="font-size: 10px; background: var(--color-primary-600); color: white; padding: 1px 6px; border-radius: 100px; margin-left: 4px;">ADMIN</span>
       </a>
@@ -37,7 +37,7 @@ export function renderAdminSidebar(activePage = 'dashboard', isSubPage = false) 
     </nav>
 
     <div style="margin-top: auto; padding: var(--space-4);">
-      <a href="${isSubPage ? '../../pages/dashboard.html' : '../pages/dashboard.html'}" class="admin-nav-item" style="color: var(--color-primary-600);">
+      <a href="/dashboard" class="admin-nav-item" style="color: var(--color-primary-600);">
         <span>🏠</span>
         <span class="admin-nav-label">Asosiy sayt</span>
       </a>
