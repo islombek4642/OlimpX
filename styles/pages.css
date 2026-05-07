@@ -196,6 +196,33 @@
   box-shadow: var(--shadow-sm);
 }
 
+.quiz-header__container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.quiz-header__title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 70%; /* Taymer uchun joy qoldirish */
+}
+
+@media (max-width: 480px) {
+  .quiz-header__title {
+    font-size: 15px;
+    max-width: 60%;
+  }
+}
+
 .quiz-container { max-width: 800px; margin: 0 auto; padding: var(--space-8) var(--space-4); width: 100%; }
 
 .progress-bar-container {
