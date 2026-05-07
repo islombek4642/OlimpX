@@ -65,11 +65,11 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "blob:"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdnjs.cloudflare.com", "https://cdn.jsdelivr.net", "https://www.googletagmanager.com", "https://www.google-analytics.com", "blob:"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      imgSrc: ["'self'", "data:", "blob:"],
-      connectSrc: ["'self'", "wss:", "ws:"],
+      imgSrc: ["'self'", "data:", "blob:", "https://www.google-analytics.com"],
+      connectSrc: ["'self'", "wss:", "ws:", "https://www.google-analytics.com", "https://cdn.jsdelivr.net"],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],
     },
