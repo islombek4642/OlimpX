@@ -24,19 +24,18 @@
 <body>
   <div class="quiz-page">
     <header class="quiz-header">
-      <div class="quiz-container" style="padding: 0 var(--space-4); display: flex; justify-content: space-between; align-items: center;">
-        <div class="flex items-center gap-4">
-          <button id="exitBtn" class="btn btn--ghost" style="padding: 8px;">✕</button>
-          <div>
-            <h2 id="olympiadTitle" style="font-size: 16px; font-weight: 700; color: var(--text-primary);">Olimpiada</h2>
-            <p id="questionCounter" style="font-size: 12px; color: var(--text-tertiary);">Savol 0/0</p>
+      <div class="quiz-header__container">
+        <div class="quiz-header__left">
+          <button id="exitBtn" class="btn btn--ghost quiz-header__exit">✕</button>
+          <div class="quiz-header__info">
+            <h2 id="olympiadTitle" class="quiz-header__title">Olimpiada</h2>
+            <p id="questionCounter" class="quiz-header__subtitle">Savol 0/0</p>
           </div>
         </div>
-        <div class="flex items-center gap-4">
-          <button id="stopQuizBtn" class="btn btn--outline" style="padding: 6px 16px; font-size: 13px; border-radius: 12px; height: fit-content; border-color: rgba(239, 68, 68, 0.2); color: #ef4444;">Testni to'xtatish</button>
+        <div class="quiz-header__right">
+          <button id="stopQuizBtn" class="btn btn--outline quiz-header__stop">To'xtatish</button>
           <div class="timer-badge" id="timer">00:00</div>
         </div>
-
       </div>
     </header>
 
