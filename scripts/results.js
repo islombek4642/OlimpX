@@ -240,7 +240,10 @@ document.addEventListener('DOMContentLoaded', async () => {
           doc.setFont('helvetica', 'italic');
           doc.setTextColor(148, 163, 184);
           const certTitle = result.title || (result.olympiad ? result.olympiad.title : 'Olimpiada');
-          doc.text(`"${certTitle}" olimpiadasidagi yuksak ishtiroki uchun.`, pageWidth / 2, 125, { align: 'center' });
+          
+          // Split long titles into multiple lines
+          const splitTitle = doc.splitTextToSize(`"${certTitle}" olimpiadasidagi yuksak ishtiroki uchun.`, pageWidth - 60);
+          doc.text(splitTitle, pageWidth / 2, 125, { align: 'center' });
 
 
           // 7. SCORE

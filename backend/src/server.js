@@ -69,7 +69,7 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:", "blob:", "https://www.google-analytics.com"],
-      connectSrc: ["'self'", "wss:", "ws:", "https://www.google-analytics.com", "https://cdn.jsdelivr.net"],
+      connectSrc: ["'self'", "wss:", "ws:", "https://www.google-analytics.com", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
       objectSrc: ["'none'"],
       upgradeInsecureRequests: [],
     },
