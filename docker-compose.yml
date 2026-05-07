@@ -5,22 +5,25 @@ services:
       dockerfile: Dockerfile
     container_name: olimpx-app
     restart: unless-stopped
-    ports:
-      - "3000:3000"
+    expose:
+      - "3000"
     environment:
       - NODE_ENV=production
       - DATABASE_URL=${DATABASE_URL}
       - JWT_SECRET=${JWT_SECRET}
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - ADMIN_PASSWORD=${ADMIN_PASSWORD}
-      - CORS_ORIGIN=${CORS_ORIGIN:-http://localhost:3000}
+      - CORS_ORIGIN=https://${DOMAIN:-localhost}
       - REDIS_URL=${REDIS_URL:-redis://redis:6379}
       - REDIS_ENABLED=${REDIS_ENABLED:-false}
       - PORT=3000
+      - VIRTUAL_HOST=${DOMAIN:-localhost},www.${DOMAIN:-localhost}
+      - LETSENCRYPT_HOST=${DOMAIN:-localhost},www.${DOMAIN:-localhost}
     depends_on:
       - db
     networks:
       - olimpx-network
+      - proxy_network
     volumes:
       - uploads:/app/backend/uploads
 
@@ -28,8 +31,6 @@ services:
     image: postgres:15-alpine
     container_name: olimpx-db
     restart: unless-stopped
-    ports:
-      - "5432:5432"
     environment:
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-postgres}
@@ -44,8 +45,6 @@ services:
     image: redis:7-alpine
     container_name: olimpx-redis
     restart: unless-stopped
-    ports:
-      - "6379:6379"
     networks:
       - olimpx-network
     volumes:
@@ -54,6 +53,8 @@ services:
 networks:
   olimpx-network:
     driver: bridge
+  proxy_network:
+    external: true
 
 volumes:
   postgres-data:

@@ -76,53 +76,8 @@ if ! command -v docker &> /dev/null; then
     exit 1
 fi
 
-# SSL rejimini aniqlash
-SSL_MODE=false
-if [ -n "$DOMAIN" ] && [ "$DOMAIN" != "your-domain.com" ] && [ -f "docker-compose.ssl.yml" ]; then
-    echo -e "🔐 SSL (Nginx + Certbot) rejimi tanlandi. Domain: ${YELLOW}$DOMAIN${NC}"
-    DOCKER_FILE="docker-compose.ssl.yml"
-    SSL_MODE=true
-
-    # nginx.conf ni templatedan yaratish
-    if [ -f "nginx/nginx.conf.template" ]; then
-        mkdir -p nginx
-        sed "s/\${DOMAIN}/$DOMAIN/g" nginx/nginx.conf.template > nginx/nginx.conf
-        echo -e "${GREEN}✅ nginx.conf yaratildi (domain: $DOMAIN)${NC}"
-    else
-        echo -e "${RED}❌ nginx/nginx.conf.template topilmadi!${NC}"
-        exit 1
-    fi
-
-    # Agar sertifikat mavjud bo'lmasa, vaqtinchalik HTTP-only nginx.conf yaratamiz
-    CERT_PATH="/etc/letsencrypt/live/$DOMAIN/fullchain.pem"
-    if [ ! -d "$(pwd)/certbot-data/live/$DOMAIN" ]; then
-        echo -e "${YELLOW}📜 SSL sertifikat topilmadi. Birinchi bosqich: HTTP-only nginx bilan sertifikat olinadi...${NC}"
-        cat > nginx/nginx.conf << NGINX_HTTP_ONLY
-server {
-    listen 80;
-    listen [::]:80;
-    server_name $DOMAIN www.$DOMAIN;
-
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
-
-    location / {
-        return 200 'OlimpX SSL initialization in progress...';
-        add_header Content-Type text/plain;
-    }
-}
-NGINX_HTTP_ONLY
-        NEED_CERT=true
-    else
-        echo -e "${GREEN}✅ SSL sertifikat mavjud.${NC}"
-        NEED_CERT=false
-    fi
-else
-    echo -e "🚀 Standart rejim (SSL'siz) tanlandi."
-    echo -e "   ${YELLOW}💡 SSL uchun .env ga DOMAIN=sizning-domeningiz.com qo'shing${NC}"
-    DOCKER_FILE="docker-compose.yml"
-fi
+echo -e "� Global nginx-proxy orqali ishga tushirilmoqda. Domain: ${YELLOW}$DOMAIN${NC}"
+DOCKER_FILE="docker-compose.yml"
 
 echo "🏗️  Konteynerlar qurilmoqda..."
 $DOCKER_COMPOSE_CMD -f $DOCKER_FILE down
@@ -160,32 +115,11 @@ else
     echo -e "${YELLOW}Qayta urinib ko'rish: docker exec olimpx-app npm run db:setup${NC}"
 fi
 
-# 5. Nginx qayta yuklash (Host Proxy rejimida)
-if [ "$SSL_MODE" = "true" ]; then
-    echo -e "\n${BLUE}Step 5: Nginx sozlamalarini yangilash...${NC}"
-    # Nginx config template dan yaratish
-    sed "s/\${DOMAIN}/$DOMAIN/g" nginx/nginx.conf.template > nginx/nginx.conf
-    docker exec olimpx-nginx nginx -s reload
-    echo -e "${GREEN}✅ Docker Nginx yangilandi.${NC}"
-    echo -e "${YELLOW}ℹ️  Endi Host (Ubuntu) Nginx'da proxy sozlamasini bajaring.${NC}"
-fi
-
 echo -e "\n${GREEN}==========================================${NC}"
 echo -e "${GREEN}✅ Docker Deployment muvaffaqiyatli yakunlandi!${NC}"
-SERVER_IP=$(curl -s https://api.ipify.org || hostname -I | awk '{print $1}')
-
-if [ "$SSL_MODE" = "true" ]; then
-    # Domen ishlayotganini tekshirish
-    if host "$DOMAIN" > /dev/null 2>&1; then
-        echo -e "${GREEN}🌐 Sayt: https://${DOMAIN}:8444${NC}"
-    else
-        echo -e "${YELLOW}⚠️ Domen hali ulanmagan ($DOMAIN)${NC}"
-        echo -e "${GREEN}🌐 Sayt (IP orqali): http://${SERVER_IP}:8081${NC}"
-    fi
-    echo -e "${YELLOW}ℹ️  Eslatma: Port 80 band bo'lgani uchun OlimpX 8081/8444 portlarda ishga tushirildi.${NC}"
-else
-    echo -e "${GREEN}🌐 Sayt: http://${SERVER_IP}:3000${NC}"
-fi
+echo -e "${GREEN}🌐 Sayt: https://${DOMAIN}${NC}"
+echo -e "${YELLOW}ℹ️  Eslatma: SSL va yo'naltirish global nginx-proxy orqali boshqariladi.${NC}"
 echo -e "${GREEN}==========================================${NC}"
 
 docker ps | grep olimpx
+
