@@ -160,65 +160,14 @@ else
     echo -e "${YELLOW}Qayta urinib ko'rish: docker exec olimpx-app npm run db:setup${NC}"
 fi
 
-# 5. SSL sertifikat olish (birinchi marta)
-if [ "$SSL_MODE" = "true" ] && [ "${NEED_CERT:-false}" = "true" ]; then
-    echo -e "\n${BLUE}Step 5: SSL sertifikat olish (Certbot)...${NC}"
-    SSL_EMAIL="${SSL_EMAIL:-admin@$DOMAIN}"
-    echo "📧 Email: $SSL_EMAIL"
-    echo "🌐 Domain: $DOMAIN"
-    sleep 5  # Nginx tayyor bo'lishini kutish
-
-    # Avval faqat asosiy domenga sertifikat olishga urinib ko'ramiz
-    docker run --rm \
-        -v "$(pwd)/certbot-data:/etc/letsencrypt" \
-        -v "$(pwd)/certbot-www:/var/www/certbot" \
-        certbot/certbot certonly \
-        --webroot \
-        --webroot-path=/var/www/certbot \
-        --email "$SSL_EMAIL" \
-        --agree-tos \
-        --no-eff-email \
-        -d "$DOMAIN" \
-        -d "www.$DOMAIN" 2>/dev/null || \
-    docker run --rm \
-        -v "$(pwd)/certbot-data:/etc/letsencrypt" \
-        -v "$(pwd)/certbot-www:/var/www/certbot" \
-        certbot/certbot certonly \
-        --webroot \
-        --webroot-path=/var/www/certbot \
-        --email "$SSL_EMAIL" \
-        --agree-tos \
-        --no-eff-email \
-        -d "$DOMAIN"
-
-    if [ $? -eq 0 ]; then
-        echo -e "${GREEN}✅ SSL sertifikat muvaffaqiyatli olindi!${NC}"
-        # To'liq SSL nginx.conf ni tiklash
-        sed "s/\${DOMAIN}/$DOMAIN/g" nginx/nginx.conf.template > nginx/nginx.conf
-        docker exec olimpx-nginx nginx -s reload
-        echo -e "${GREEN}✅ Nginx SSL bilan qayta ishga tushirildi.${NC}"
-    else
-        echo -e "${RED}❌ SSL sertifikat olishda xatolik!${NC}"
-        echo -e "${YELLOW}⚠️ Sayt HTTP (port 8081) orqali ishga tushirilmoqda...${NC}"
-        
-        # Fallback HTTP-only proxy config
-        cat > nginx/nginx.conf << NGINX_FALLBACK
-upstream olimpx_backend { server app:3000; }
-server {
-    listen 80;
-    server_name $DOMAIN www.$DOMAIN $SERVER_IP;
-    location / {
-        proxy_pass http://olimpx_backend;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host \$host;
-        proxy_cache_bypass \$http_upgrade;
-    }
-}
-NGINX_FALLBACK
-        docker exec olimpx-nginx nginx -s reload
-    fi
+# 5. Nginx qayta yuklash (Host Proxy rejimida)
+if [ "$SSL_MODE" = "true" ]; then
+    echo -e "\n${BLUE}Step 5: Nginx sozlamalarini yangilash...${NC}"
+    # Nginx config template dan yaratish
+    sed "s/\${DOMAIN}/$DOMAIN/g" nginx/nginx.conf.template > nginx/nginx.conf
+    docker exec olimpx-nginx nginx -s reload
+    echo -e "${GREEN}✅ Docker Nginx yangilandi.${NC}"
+    echo -e "${YELLOW}ℹ️  Endi Host (Ubuntu) Nginx'da proxy sozlamasini bajaring.${NC}"
 fi
 
 echo -e "\n${GREEN}==========================================${NC}"
