@@ -54,6 +54,12 @@ RUN addgroup -g 1001 -S nodejs && \
 # Switch to non-root user
 USER nodejs
 
+# Copy scripts and set permissions
+COPY scripts/entrypoint.sh /app/scripts/entrypoint.sh
+USER root
+RUN chmod +x /app/scripts/entrypoint.sh
+USER nodejs
+
 # Expose port
 EXPOSE 3000
 
@@ -61,6 +67,6 @@ EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# Start application
-ENTRYPOINT ["dumb-init", "--"]
-CMD ["npm", "start"]
+# Use entrypoint script
+ENTRYPOINT ["/app/scripts/entrypoint.sh"]
+

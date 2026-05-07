@@ -89,31 +89,10 @@ if [ $? -ne 0 ]; then
 fi
 
 # 4. Database Setup (Konteyner ichida)
-echo -e "\n${BLUE}Step 4: Database sozlash (Migratsiya va Seed)...${NC}"
-echo "⏳ PostgreSQL tayyor bo'lishini kutilmoqda..."
-
-RETRIES=30
-until docker exec olimpx-db pg_isready -U "$PG_USER" -q; do
-    RETRIES=$((RETRIES - 1))
-    if [ $RETRIES -eq 0 ]; then
-        echo -e "${RED}❌ PostgreSQL 60 soniya ichida tayyor bo'lmadi!${NC}"
-        exit 1
-    fi
-    echo "⏳ PostgreSQL hali tayyor emas, 2 soniya kutilmoqda... ($RETRIES urinish qoldi)"
-    sleep 2
-done
-echo -e "${GREEN}✅ PostgreSQL tayyor.${NC}"
-sleep 2
-
-echo "🔄 Prisma migratsiya va seed ishga tushmoqda..."
-docker exec olimpx-app npm run db:setup
-
-if [ $? -eq 0 ]; then
-    echo -e "${GREEN}✅ Database muvaffaqiyatli sozlandi.${NC}"
-else
-    echo -e "${RED}❌ Database sozlashda xatolik!${NC}"
-    echo -e "${YELLOW}Qayta urinib ko'rish: docker exec olimpx-app npm run db:setup${NC}"
-fi
+echo -e "\n${BLUE}Step 4: Database sozlash...${NC}"
+echo "⏳ Konteynerlar o'z-o'zini sozlashini (Prisma/Seed) kutilmoqda..."
+echo "ℹ️  Barcha jarayonlar entrypoint.sh orqali konteyner ichida bajarilmoqda."
+sleep 10 # Konteynerlar o'zini sozlab olishi uchun biroz kutamiz
 
 echo -e "\n${GREEN}==========================================${NC}"
 echo -e "${GREEN}✅ Docker Deployment muvaffaqiyatli yakunlandi!${NC}"
