@@ -6,7 +6,7 @@ import { generateRandomString } from '../utils/helpers.js';
 // Constants for security
 const MAX_LOGIN_ATTEMPTS = 5;
 const LOCKOUT_DURATION_MINUTES = 15;
-const ACCESS_TOKEN_EXPIRY = '15m'; // Short-lived access token
+const ACCESS_TOKEN_EXPIRY = '7d'; // Increased for production stability
 const REFRESH_TOKEN_EXPIRY_DAYS = 7; // Long-lived refresh token
 
 /**
@@ -146,7 +146,7 @@ export const register = async (req, res, next) => {
       data: {
         accessToken,
         refreshToken,
-        expiresIn: 900, // 15 minutes in seconds
+        expiresIn: 604800, // 7 days in seconds
         user
       }
     });
@@ -217,7 +217,7 @@ export const login = async (req, res, next) => {
       data: {
         accessToken,
         refreshToken,
-        expiresIn: 900, // 15 minutes in seconds
+        expiresIn: 604800, // 7 days in seconds
         user: {
           id: user.id,
           fullName: user.fullName,
@@ -283,7 +283,7 @@ export const refreshToken = async (req, res, next) => {
       success: true,
       data: {
         accessToken,
-        expiresIn: 900,
+        expiresIn: 604800,
         user: {
           id: tokenRecord.user.id,
           fullName: tokenRecord.user.fullName,
